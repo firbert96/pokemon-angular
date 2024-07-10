@@ -1,3 +1,7 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+const appRoutes: Routes = [
+  { path: '**', redirectTo: '', pathMatch: 'full' }
+];
+
+export default appRoutes;
