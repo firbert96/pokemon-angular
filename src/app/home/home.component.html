@@ -1,0 +1,16 @@
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+	<li [ngbNavItem]="1">
+		<button ngbNavLink>Home</button>
+		<ng-template ngbNavContent>
+			<app-all></app-all>
+		</ng-template>
+	</li>
+	<li [ngbNavItem]="2">
+		<button ngbNavLink>Favorites</button>
+		<ng-template ngbNavContent>
+			<app-favorites></app-favorites>
+		</ng-template>
+	</li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
