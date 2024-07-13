@@ -1,10 +1,30 @@
-.container {
-  border: 1px solid #ccc;
-  overflow-y: hidden;
-}
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
+:host {
+  .container {
+    border: 1px solid #ccc;
+    overflow-y: hidden;
+  }
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+  mat-list-item {
+    padding: 0;
+    width: 22vw;
+    height: 40vh !important;
+    margin: 1em; /* Add some margin for spacing between items */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // border: 1px solid #ccc; /* Optional: Add border to see item boundaries */
+    box-sizing: border-box;
+  }
+  mat-list {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0;
+  }
 }

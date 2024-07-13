@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { ListOutput, Result } from '../../interfaces/api';
-import { log } from 'console';
+import { DetailComponent } from '../detail/detail.component';
 
 @Component({
   selector: 'app-all',
@@ -13,7 +13,8 @@ import { log } from 'console';
   imports: [
     MatListModule,
     MatProgressSpinnerModule,
-    CommonModule
+    CommonModule,
+    DetailComponent,
   ],
   templateUrl: './all.component.html',
   styleUrl: './all.component.scss'
@@ -44,7 +45,6 @@ export class AllComponent implements OnInit, OnDestroy {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    console.log('onScroll', scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading , scrollHeight, scrollTop, clientHeight, this.threshold, this.loading);
 
     if (scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading) {
       this.loadMoreItems();
