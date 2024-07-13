@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-all',
@@ -9,18 +10,19 @@ import { Subscription } from 'rxjs';
   styleUrl: './all.component.scss'
 })
 export class AllComponent implements OnInit, OnDestroy {
-  private apiUrl = 'https://pokeapi.co/api/v2/';
   private subscriptions: Subscription[] = [];
 
-  constructor() { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-
+    this.getAll();
   }
 
   getAll(): void {
-    // const subscription = this.http.post<any>(`${this.apiUrl}/pokemon?offset=20&limit=20`,{})
-    // this.subscriptions.push(subscription);
+    this.apiService.getData('?offset=20&limit=20').subscribe({
+      next: (value) => { console.log(value) },
+      error: (error) => { console.error(error)},
+    });
   }
 
   ngOnDestroy(): void {
