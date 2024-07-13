@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -13,7 +12,7 @@ export class AllComponent implements OnInit, OnDestroy {
   private apiUrl = 'https://pokeapi.co/api/v2/';
   private subscriptions: Subscription[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   ngOnInit(): void {
 

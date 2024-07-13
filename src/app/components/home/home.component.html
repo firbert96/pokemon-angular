@@ -1,36 +1,8 @@
-<!-- <ul ngbNav #nav="ngbNav" class="nav-tabs">
-	<li ngbNavItem>
-		<button ngbNavLink>All</button>
-		<ng-template ngbNavContent>
-			<app-all></app-all>
-		</ng-template>
-	</li>
-	<li ngbNavItem>
-		<button ngbNavLink>Favorites</button>
-		<ng-template ngbNavContent>
-			<app-favorites></app-favorites>
-		</ng-template>
-	</li>
-</ul>
-
-<div [ngbNavOutlet]="nav" class="mt-2"></div> -->
-
-<!-- app.component.html -->
-<ngb-nav #nav="ngbNav" [(activeId)]="activeId" class="nav-tabs">
-  <ng-template ngbNavContent>
-    <ng-container *ngIf="activeId === 1">
-      <div>Content for Tab 1</div>
-    </ng-container>
-    <ng-container *ngIf="activeId === 2">
-      <div>Content for Tab 2</div>
-    </ng-container>
-  </ng-template>
-  <ng-template ngbNavItem>
-    <a ngbNavLink>Tab 1</a>
-  </ng-template>
-  <ng-template ngbNavItem>
-    <a ngbNavLink>Tab 2</a>
-  </ng-template>
-</ngb-nav>
-<div [ngbNavOutlet]="nav"></div>
-
+<mat-tab-group>
+  <mat-tab label="All">
+    <app-all></app-all>
+  </mat-tab>
+  <mat-tab label="Favorites">
+    <app-favorites></app-favorites>
+  </mat-tab>
+</mat-tab-group>
