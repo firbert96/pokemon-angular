@@ -1,20 +1,20 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { ListOutput, Result } from '../../interfaces/api';
 import { DetailComponent } from '../detail/detail.component';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-all',
   standalone: true,
   imports: [
-    MatListModule,
     MatProgressSpinnerModule,
     CommonModule,
     DetailComponent,
+    MatGridListModule,
   ],
   templateUrl: './all.component.html',
   styleUrl: './all.component.scss'

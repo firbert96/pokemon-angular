@@ -59,6 +59,7 @@ export interface Sprites {
   front_shiny_female: string | null,
 }
 export interface DetailOutput {
+  sound: string;
   id:number,
   name:string,
   base_experience: number,
@@ -73,8 +74,23 @@ export interface DetailOutput {
   location_area_encounters: string,
   moves: Moves[],
   cries: Cries,
-  sprites: Sprites[],
+  sprites: Sprites,
   species: Result,
   stats: Stats[],
   type: Types[],
+}
+
+export interface DetailLiteOutput {
+  // Id: number,
+  // Exp: number,
+  // HP: number,
+  // Attack: number,
+  // Defense: number,
+  // "Special Attack": number,
+  // "Special Defense": number,
+  // Speed: number,
+  // sound: string,
+  // type: Types[],
+  key: string,
+  value: number| string | Types[],
 }
