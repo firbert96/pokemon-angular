@@ -1,14 +1,11 @@
 <mat-card class="card" appearance="raised">
   <ng-container *ngIf="data">
     <mat-card-header>
-      <mat-card-title>
-        {{name}}
+      <mat-card-title fxLayout="row" fxLayoutAlign="center center">
+        <div class="title">{{name}}</div>
         <div class="audio-player">
-          <button mat-icon-button (click)="togglePlayPause()">
-            <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-          </button>
-          <button mat-icon-button (click)="stop()">
-            <mat-icon>stop</mat-icon>
+          <button mat-mini-fab (click)="togglePlayPause()">
+            <mat-icon class="audio-player-icon">{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
           </button>
           <audio #audio controls hidden>
             <source [src]="urlSound" type="audio/ogg">
@@ -16,11 +13,16 @@
           </audio>
         </div>
       </mat-card-title>
-      <mat-card-subtitle>
+      <mat-card-subtitle fxLayout="row" fxLayoutAlign="center center">
+        <mat-chip-set fxLayout="row" fxLayoutAlign="center center">
+          @for (t of types; track t) {
+            <mat-chip >{{t.type.name}}</mat-chip>
+          }
+        </mat-chip-set>
 
       </mat-card-subtitle>
     </mat-card-header>
-    <img mat-card-image [src]="data.sprites.front_default" alt="pokemon img">
+    <img mat-card-image [class.shake]="isPlaying" [src]="data.sprites.front_default" alt="pokemon img">
     <mat-card-content>
       @for (item of detail; track item) {
         <div class="m-2">

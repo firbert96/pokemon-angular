@@ -8,8 +8,9 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-
-
+import { MatButtonModule } from '@angular/material/button';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {MatChipsModule} from '@angular/material/chips';
 @Component({
   selector: 'app-detail',
   standalone: true,
@@ -19,6 +20,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressSpinnerModule,
     MatGridListModule,
     MatIconModule,
+    MatButtonModule,
+    FlexLayoutModule,
+    MatChipsModule,
   ],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss'
@@ -27,9 +31,9 @@ export class DetailComponent implements OnInit, OnDestroy {
   @Input() urlParams: string = '';
   data!: DetailOutput;
   detail: DetailLiteOutput[] = [];
-  detailSubTitle: DetailLiteOutput[] = [];
   name = '';
   urlSound = '';
+  types: Types[] = [];
   url = baseURL;
   private subscriptions: Subscription[] = [];
   constructor(private apiService: ApiService) { }
@@ -52,8 +56,9 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   setDetail(): void {
     this.name = this.data.name;
-    this.urlSound = this.data.cries.latest,
-    this.detailSubTitle = [
+    this.urlSound = this.data.cries.latest;
+    this.types = this.data.types;
+    this.detail = [
       {
         key: 'ID',
         value: this.data.id,
@@ -65,12 +70,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       {
         key: 'HP',
         value: 'Unknown',
-      },
-    ];
-    this.detail = [
-      {
-        key: 'type',
-        value: this.data.type,
       },
       {
         key: 'Attack',
@@ -117,7 +116,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     })
   }
 
-  updateItemValue(key: string, newValue: number| string | Types[]): void {
+  updateItemValue(key: string, newValue: number| string): void {
     const index = this.detail.findIndex(item => item.key === key);
     if (index !== -1) {
       this.detail[index].value = newValue;
@@ -125,22 +124,21 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   isPlaying = false;
+  isDisabled = false;
   @ViewChild('audio', { static: false }) audio!: ElementRef<HTMLAudioElement>;
 
   togglePlayPause(): void {
-    if (this.isPlaying) {
-      this.audio.nativeElement.pause();
-
-    } else {
-      this.audio.nativeElement.play();
+    if (this.isDisabled) {
+      return;
     }
-    this.isPlaying = !this.isPlaying;
-  }
-
-  stop(): void {
-    this.audio.nativeElement.pause();
-    this.audio.nativeElement.currentTime = 0;
-    this.isPlaying = false;
+    this.isDisabled = true;
+    this.audio.nativeElement.play();
+    this.isPlaying = true;
+    setTimeout(()=>{
+      this.isPlaying = false;
+      this.audio.nativeElement.pause();
+      this.isDisabled = false;
+    },1000);
   }
 
   ngOnDestroy(): void {

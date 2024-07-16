@@ -22,7 +22,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 export class AllComponent implements OnInit, OnDestroy {
   items: Result[] = [];
   loading = false;
-  inc = 20;
+  inc = 12;
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 

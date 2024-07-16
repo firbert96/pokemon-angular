@@ -77,20 +77,10 @@ export interface DetailOutput {
   sprites: Sprites,
   species: Result,
   stats: Stats[],
-  type: Types[],
+  types: Types[],
 }
 
 export interface DetailLiteOutput {
-  // Id: number,
-  // Exp: number,
-  // HP: number,
-  // Attack: number,
-  // Defense: number,
-  // "Special Attack": number,
-  // "Special Defense": number,
-  // Speed: number,
-  // sound: string,
-  // type: Types[],
   key: string,
-  value: number| string | Types[],
+  value: number| string,
 }
