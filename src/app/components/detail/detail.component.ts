@@ -29,6 +29,7 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 })
 export class DetailComponent implements OnInit, OnDestroy {
   @Input() urlParams: string = '';
+  @Input() favorite!: boolean;
   data!: DetailOutput;
   detail: DetailLiteOutput[] = [];
   name = '';

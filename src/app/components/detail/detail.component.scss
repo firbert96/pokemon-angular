@@ -18,13 +18,6 @@ mat-card-content {
   overflow-y: auto;
 }
 
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-}
-
 .audio-player {
   display: flex;
   align-items: center;
@@ -63,4 +56,12 @@ mat-icon-button {
   border-radius: 50% !important;
   width: 20px !important;
   height: 20px !important;
+}
+
+::ng-deep .skeleton-loader {
+  margin-bottom: 0 !important;
+}
+
+::ng-deep ngx-skeleton-loader {
+  margin-bottom: 4%;
 }

@@ -7,6 +7,7 @@ export interface ListOutput {
 export interface Result {
   name: string;
   url: string;
+  favorite?: boolean;
 }
 export interface Abilities {
   ability: Result,
