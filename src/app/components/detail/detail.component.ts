@@ -5,24 +5,24 @@ import { DetailLiteOutput, DetailOutput, Types } from '../../interfaces/api';
 import { baseURL } from '../../mock/mock';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 @Component({
   selector: 'app-detail',
   standalone: true,
   imports: [
     MatCardModule,
     CommonModule,
-    MatProgressSpinnerModule,
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
     FlexLayoutModule,
     MatChipsModule,
+    NgxSkeletonLoaderModule,
   ],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss'

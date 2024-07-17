@@ -1,5 +1,5 @@
 <mat-card class="card" appearance="raised">
-  <ng-container *ngIf="data">
+  <!-- <ng-container *ngIf="data">
     <mat-card-header>
       <mat-card-title fxLayout="row" fxLayoutAlign="center center">
         <div class="title">{{name}}</div>
@@ -31,7 +31,10 @@
       }
     </mat-card-content>
   </ng-container>
-  <div *ngIf="!data" class="loader">
-    <mat-spinner></mat-spinner>
+  <div *ngIf="!data" class="loader"> -->
+  <div class="loader">
+    <ngx-skeleton-loader count="2" animation="progress" />
+    <ngx-skeleton-loader count="9" animation="progress" />
   </div>
+  <!-- </div> -->
 </mat-card>
