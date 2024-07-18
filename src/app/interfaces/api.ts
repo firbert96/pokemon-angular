@@ -85,3 +85,9 @@ export interface DetailLiteOutput {
   key: string,
   value: number| string,
 }
+
+export interface ListDataFilter {
+  url: string;
+  favorite: boolean;
+  types: string;
+}

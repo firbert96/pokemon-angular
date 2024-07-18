@@ -10,6 +10,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { GeneralService } from '../../services/general.service';
 @Component({
   selector: 'app-all',
   standalone: true,
@@ -33,14 +34,22 @@ export class AllComponent implements OnInit, OnDestroy {
   inc = 12;
   types: string[] = [];
   type = new FormControl('');
+  limit = this.items.length + this.inc;
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private generalService: GeneralService,
+  ) { }
 
   ngOnInit(): void {
-    this.getData(`/pokemon?limit=${this.inc}&offset=${this.items.length}`);
+    this.getData('');
     this.getTypes();
+    this.type.valueChanges.subscribe(value => {
+      this.items = [];
+      this.getData(value?? '');
+    });
   }
 
   getTypes(): void {
@@ -55,16 +64,18 @@ export class AllComponent implements OnInit, OnDestroy {
     this.subscriptions.push(s);
   }
 
-  getData(params:string): void {
-    const s = this.apiService.getData(params).subscribe({
+  getData(type: string): void {
+    const s = this.apiService.getData(`/pokemon?limit=${this.limit}&offset=${this.items.length}`).subscribe({
       next: (value:ListOutput) => {
         value.results.forEach((x)=>{
+
           const item: Result = {
             name: x.name,
             url: x.url,
             favorite: false,
           };
           this.items.push(item);
+
         })
       },
       error: (error) => { console.error(error)},
@@ -88,8 +99,8 @@ export class AllComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     setTimeout(() => {
-      const limit = this.items.length + this.inc;
-      this.getData(`/pokemon?limit=${limit}&offset=${this.items.length}`)
+      this.limit = this.items.length + this.inc;
+      this.getData(this.type.value ?? '')
       this.loading = false;
     }, 1000);
   }

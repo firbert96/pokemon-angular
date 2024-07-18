@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
-import { DetailLiteOutput, DetailOutput, Types } from '../../interfaces/api';
+import { DetailLiteOutput, DetailOutput, ListDataFilter, Types } from '../../interfaces/api';
 import { baseURL } from '../../mock/mock';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { GeneralService } from '../../services/general.service';
 @Component({
   selector: 'app-detail',
   standalone: true,
@@ -37,7 +38,10 @@ export class DetailComponent implements OnInit, OnDestroy {
   types: Types[] = [];
   url = baseURL;
   private subscriptions: Subscription[] = [];
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private generalService: GeneralService,
+  ) { }
 
   ngOnInit(): void {
     this.getData();
@@ -115,6 +119,19 @@ export class DetailComponent implements OnInit, OnDestroy {
           break;
       }
     })
+  }
+
+  setListDataFilter(): void {
+    let types = '';
+    this.data.types.forEach((x) => {
+      types += x.type.name+'|';
+    })
+    const item: ListDataFilter = {
+      url: this.url,
+      favorite: this.favorite,
+      types,
+    }
+    this.generalService.setListDataFilter(item);
   }
 
   updateItemValue(key: string, newValue: number| string): void {
