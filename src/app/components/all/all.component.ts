@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
-import { ListOutput, Result } from '../../interfaces/api';
+import { ListDataFilter, ListOutput, Result, Types } from '../../interfaces/api';
 import { DetailComponent } from '../detail/detail.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,10 +29,11 @@ import { GeneralService } from '../../services/general.service';
   styleUrl: './all.component.scss'
 })
 export class AllComponent implements OnInit, OnDestroy {
-  items: Result[] = [];
+  items: ListDataFilter[] = [];
   loading = false;
   inc = 12;
   types: string[] = [];
+  allTypesPlaceholder = 'All Types';
   type = new FormControl('');
   limit = this.items.length + this.inc;
   private threshold = 50; // Distance from bottom to trigger loading
@@ -50,11 +51,15 @@ export class AllComponent implements OnInit, OnDestroy {
       this.items = [];
       this.getData(value?? '');
     });
+    this.generalService.listDataFilter$.subscribe(value => {
+      this.items = value
+    });
   }
 
   getTypes(): void {
     const s = this.apiService.getData('/type').subscribe({
       next: (value:ListOutput) => {
+        this.types.push(this.allTypesPlaceholder);
         value.results.forEach((x)=>{
           this.types.push(x.name);
         })
@@ -68,14 +73,15 @@ export class AllComponent implements OnInit, OnDestroy {
     const s = this.apiService.getData(`/pokemon?limit=${this.limit}&offset=${this.items.length}`).subscribe({
       next: (value:ListOutput) => {
         value.results.forEach((x)=>{
-
-          const item: Result = {
-            name: x.name,
-            url: x.url,
-            favorite: false,
-          };
-          this.items.push(item);
-
+          if(type === '' || type === this.allTypesPlaceholder ) {
+            const item: ListDataFilter = {
+              name: x.name,
+              url: x.url,
+              favorite: false,
+              types: '',
+            };
+            this.generalService.setListDataFilter(item);
+          }
         })
       },
       error: (error) => { console.error(error)},

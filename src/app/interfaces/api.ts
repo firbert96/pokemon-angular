@@ -7,7 +7,6 @@ export interface ListOutput {
 export interface Result {
   name: string;
   url: string;
-  favorite?: boolean;
 }
 export interface Abilities {
   ability: Result,
@@ -87,6 +86,7 @@ export interface DetailLiteOutput {
 }
 
 export interface ListDataFilter {
+  name: string;
   url: string;
   favorite: boolean;
   types: string;

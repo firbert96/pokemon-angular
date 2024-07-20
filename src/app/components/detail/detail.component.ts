@@ -30,7 +30,6 @@ import { GeneralService } from '../../services/general.service';
 })
 export class DetailComponent implements OnInit, OnDestroy {
   @Input() urlParams: string = '';
-  @Input() favorite!: boolean;
   data!: DetailOutput;
   detail: DetailLiteOutput[] = [];
   name = '';
@@ -119,19 +118,6 @@ export class DetailComponent implements OnInit, OnDestroy {
           break;
       }
     })
-  }
-
-  setListDataFilter(): void {
-    let types = '';
-    this.data.types.forEach((x) => {
-      types += x.type.name+'|';
-    })
-    const item: ListDataFilter = {
-      url: this.url,
-      favorite: this.favorite,
-      types,
-    }
-    this.generalService.setListDataFilter(item);
   }
 
   updateItemValue(key: string, newValue: number| string): void {
