@@ -78,23 +78,8 @@ mat-card-subtitle {
   margin-bottom: 4%;
 }
 
-::ng-deep .material-symbols-outlined {
+::ng-deep .material-icons, ::ng-deep .material-symbols-outlined {
   height: unset;
   width: unset;
-  &.fill {
-    color: red;
-    font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24
-  }
-  &.empty {
-    color: red;
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24
-  }
+  color: red;
 }

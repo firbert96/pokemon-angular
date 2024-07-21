@@ -23,7 +23,6 @@ export class GeneralService {
   }
 
   setFavoritesFlag(url: string, flag:boolean ): void {
-    console.log('setFavoritesFlag');
     let list = this._listDataFilter.getValue();
     const idx = list.findIndex(x=>x.url===url);
     list[idx].favorite = flag;

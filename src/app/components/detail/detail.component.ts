@@ -158,9 +158,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   favoriteClick(): void {
-    console.log('favoriteClick');
-    this.favorite = !this.favorite;
-    this.generalService.setFavoritesFlag(this.urlParams, this.favorite);
+    this.generalService.setFavoritesFlag(this.urlParams, !this.favorite);
   }
 
   // function placeholder

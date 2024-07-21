@@ -55,8 +55,7 @@ export class ListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // Set scroll position to 500px from the top
-    this.setScrollPosition(500);
+    this.toggleScrollPosition();
     this.getTypes();
     this.type.valueChanges.subscribe(value => {
       this.typeValue = String(value);
@@ -142,6 +141,28 @@ export class ListComponent implements OnInit, OnDestroy {
       this.getData();
       this.oldTypeValue = this.typeValue;
     }, 1000);
+  }
+
+  // Optional: Method to listen to key events if needed
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') { // Or any key of your choice
+      this.toggleScrollPosition();
+    }
+  }
+
+  // Method to toggle scroll position
+  toggleScrollPosition() {
+    const currentScroll = window.scrollY;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+    if (currentScroll === 0) {
+      // If at the top, scroll to the bottom
+      this.setScrollPosition(maxScroll);
+    } else {
+      // If not at the top, scroll to the top
+      this.setScrollPosition(0);
+    }
   }
 
   // function placeholder

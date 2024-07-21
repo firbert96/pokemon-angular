@@ -7,7 +7,12 @@
           (keypress)="onKeyPress($event)"
           (keydown)="onKeyDown($event)"
           (keyup)="onKeyUp($event)">
-          <span class="material-symbols-outlined" [ngClass]="favorite ? 'fill' : 'empty'">favorite</span>
+          <span class="material-icons" *ngIf="favorite">
+            favorite
+          </span>
+          <span class="material-symbols-outlined" *ngIf="!favorite">
+            favorite
+          </span>
         </div>
       </mat-card-title>
       <mat-card-subtitle fxLayout="row" fxLayoutAlign="center center">
