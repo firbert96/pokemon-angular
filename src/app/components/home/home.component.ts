@@ -1,17 +1,15 @@
 import { Component } from '@angular/core';
-import { AllComponent } from '../all/all.component';
-import { FavoritesComponent } from '../favorites/favorites.component';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ListComponent } from '../list/list.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     RouterOutlet,
-    FavoritesComponent,
-    AllComponent,
+    ListComponent,
     CommonModule,
     MatTabsModule,
   ],

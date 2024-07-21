@@ -1,16 +1,10 @@
 <mat-card class="card" appearance="raised">
   <ng-container *ngIf="data">
     <mat-card-header>
-      <mat-card-title fxLayout="row" fxLayoutAlign="center center">
+      <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
         <div class="title">{{name}}</div>
-        <div class="audio-player">
-          <button mat-mini-fab (click)="togglePlayPause()">
-            <mat-icon class="audio-player-icon">{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-          </button>
-          <audio #audio controls hidden>
-            <source [src]="urlSound" type="audio/ogg">
-            Your browser does not support the audio element.
-          </audio>
+        <div>
+          <span class="material-symbols-outlined" [ngClass]="favorite ? 'fill' : 'empty'">favorite</span>
         </div>
       </mat-card-title>
       <mat-card-subtitle fxLayout="row" fxLayoutAlign="center center">
@@ -21,7 +15,21 @@
         </mat-chip-set>
       </mat-card-subtitle>
     </mat-card-header>
-    <img mat-card-image [class.shake]="isPlaying" [src]="data.sprites.front_default" alt="pokemon img">
+    <img (click)="togglePlayPause()"
+      mat-card-image
+      [class.shake]="isPlaying"
+      [src]="data.sprites.front_default"
+      alt="pokemon img"
+      matTooltip="Click me :)"
+      [matTooltipPosition]="'below'"
+      (keypress)="onImageKeyPress($event)"
+      (keydown)="onImageKeyDown($event)"
+      (keyup)="onImageKeyUp($event)"
+    >
+    <audio #audio controls hidden>
+      <source [src]="urlSound" type="audio/ogg">
+      Your browser does not support the audio element.
+    </audio>
     <mat-card-content>
       @for (item of detail; track item) {
         <div class="m-2">

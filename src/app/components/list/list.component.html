@@ -18,10 +18,10 @@
   <ng-container *ngIf="filteredData.length > 0">
     <mat-grid-list cols="6" rowHeight="70vh">
       @for (item of filteredData; track filteredData) {
-        <mat-grid-tile *ngIf="item.types.includes(typeValue)"
+        <mat-grid-tile *ngIf="typeValue === allTypesPlaceholder || item.types.includes(typeValue)"
           [colspan]="1"
           [rowspan]="1">
-          <app-detail [urlParams]="item.url"></app-detail>
+          <app-detail [urlParams]="item.url" [favorite]="item.favorite"></app-detail>
         </mat-grid-tile>
       }
     </mat-grid-list>

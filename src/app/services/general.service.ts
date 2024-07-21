@@ -21,4 +21,11 @@ export class GeneralService {
     list[idx].types = typesStr;
     this._listDataFilter.next(list);
   }
+
+  setFavoritesFlag(url: string, flag:boolean ): void {
+    let list = this._listDataFilter.getValue();
+    const idx = list.findIndex(x=>x.url===url);
+    list[idx].favorite = flag;
+    this._listDataFilter.next(list);
+  }
 }

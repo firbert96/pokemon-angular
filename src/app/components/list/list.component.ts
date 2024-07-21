@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,7 +15,7 @@ import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 @Component({
-  selector: 'app-all',
+  selector: 'app-list',
   standalone: true,
   imports: [
     MatProgressSpinnerModule,
@@ -31,16 +31,17 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatCardModule,
   ],
-  templateUrl: './all.component.html',
-  styleUrl: './all.component.scss'
+  templateUrl: './list.component.html',
+  styleUrl: './list.component.scss'
 })
-export class AllComponent implements OnInit, OnDestroy {
+export class ListComponent implements OnInit, OnDestroy {
+  @Input() favoritesOnly: boolean = false;
   items: ListDataFilter[] = [];
   loading = false;
   inc = 12;
   types: string[] = [];
   allTypesPlaceholder = 'All Types';
-  type = new FormControl('');
+  type = new FormControl(this.allTypesPlaceholder);
   limit = this.items.length + this.inc;
   oldTypeValue = '';
   typeValue = '';
@@ -54,7 +55,8 @@ export class AllComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getData();
+    // Set scroll position to 500px from the top
+    this.setScrollPosition(500);
     this.getTypes();
     this.type.valueChanges.subscribe(value => {
       this.typeValue = String(value);
@@ -63,6 +65,13 @@ export class AllComponent implements OnInit, OnDestroy {
     });
     this.generalService.listDataFilter$.subscribe(value => {
       this.items = value
+    });
+  }
+
+  setScrollPosition(y: number) {
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth' // Optional: for smooth scrolling
     });
   }
 
@@ -93,7 +102,7 @@ export class AllComponent implements OnInit, OnDestroy {
           };
           this.generalService.setListDataFilter(item);
         })
-        if(this.typeValue !== '') {
+        if(this.typeValue !== this.allTypesPlaceholder) {
           this.items.forEach(x=>{
             if(x.types.includes(this.typeValue)) {
               this.filteredData.push(x);
@@ -115,7 +124,7 @@ export class AllComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
     if (scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading && (this.oldTypeValue === '' || this.typeValue === '' || this.typeValue !== this.oldTypeValue)) {

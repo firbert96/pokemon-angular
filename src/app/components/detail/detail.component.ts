@@ -12,6 +12,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { GeneralService } from '../../services/general.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-detail',
   standalone: true,
@@ -24,12 +25,14 @@ import { GeneralService } from '../../services/general.service';
     FlexLayoutModule,
     MatChipsModule,
     NgxSkeletonLoaderModule,
+    MatTooltipModule,
   ],
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss'
 })
 export class DetailComponent implements OnInit, OnDestroy {
   @Input() urlParams: string = '';
+  @Input() favorite: boolean = false;
   data!: DetailOutput;
   detail: DetailLiteOutput[] = [];
   name = '';
@@ -153,6 +156,12 @@ export class DetailComponent implements OnInit, OnDestroy {
       this.isDisabled = false;
     },1000);
   }
+
+  onImageKeyPress(event: KeyboardEvent): void {}
+
+  onImageKeyDown(event: KeyboardEvent): void {}
+
+  onImageKeyUp(event: KeyboardEvent): void {}
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(el=>{el.unsubscribe()})
