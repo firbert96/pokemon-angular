@@ -14,6 +14,10 @@ mat-card-header {
   white-space: nowrap;
 }
 
+.type {
+  text-transform: capitalize;
+}
+
 mat-card-content {
   overflow-y: auto;
 }

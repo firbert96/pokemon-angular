@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
-import { DetailLiteOutput, DetailOutput, ListDataFilter, Types } from '../../interfaces/api';
+import { DetailLiteOutput, DetailOutput, Types } from '../../interfaces/api';
 import { baseURL } from '../../mock/mock';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
@@ -62,6 +62,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.name = this.data.name;
     this.urlSound = this.data.cries.latest;
     this.types = this.data.types;
+    this.setTypesForListDataFilter()
     this.detail = [
       {
         key: 'ID',
@@ -118,6 +119,14 @@ export class DetailComponent implements OnInit, OnDestroy {
           break;
       }
     })
+  }
+
+  setTypesForListDataFilter(): void {
+    let res = '';
+    this.types.forEach(x=>{
+      res += x.type.name+'|';
+    })
+    this.generalService.setTypesStr(this.urlParams,res);
   }
 
   updateItemValue(key: string, newValue: number| string): void {

@@ -10,21 +10,29 @@
         [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete">
         @for (option of types; track option) {
-          <mat-option [value]="option">{{option}}</mat-option>
+          <mat-option [value]="option">{{option | capitalize}}</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>
   </form>
-
-  <mat-grid-list cols="6" rowHeight="70vh">
-    @for (item of items; track item) {
-      <mat-grid-tile
-        [colspan]="1"
-        [rowspan]="1">
-        <app-detail [urlParams]="item.url"></app-detail>
-      </mat-grid-tile>
-    }
-  </mat-grid-list>
+  <ng-container *ngIf="filteredData.length > 0">
+    <mat-grid-list cols="6" rowHeight="70vh">
+      @for (item of filteredData; track filteredData) {
+        <mat-grid-tile *ngIf="item.types.includes(typeValue)"
+          [colspan]="1"
+          [rowspan]="1">
+          <app-detail [urlParams]="item.url"></app-detail>
+        </mat-grid-tile>
+      }
+    </mat-grid-list>
+  </ng-container>
+  <ng-container *ngIf="!loading && filteredData.length === 0" class="empty-state">
+    <div class="empty-state-content">
+      <span class="material-icons md-48">sentiment_dissatisfied</span>
+      <h6>No Data Available</h6>
+      <p>There is currently no data to display. Please check back later.</p>
+    </div>
+  </ng-container>
   <div *ngIf="loading" class="loader">
     <mat-spinner></mat-spinner>
   </div>

@@ -4,10 +4,10 @@
     height: 90%;
   }
   .container {
-    border: 1px solid #ccc;
     overflow-y: hidden;
   }
   .loader {
+    margin: 3% 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,4 +21,14 @@
     width: 100%;
   }
 
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .empty-state-content {
+    text-align: center;
+  }
 }

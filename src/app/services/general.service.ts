@@ -14,4 +14,11 @@ export class GeneralService {
     const updatedItems = [...currentItems, item];
     this._listDataFilter.next(updatedItems);
   }
+
+  setTypesStr(url: string, typesStr:string ): void {
+    let list = this._listDataFilter.getValue();
+    const idx = list.findIndex(x=>x.url===url);
+    list[idx].types = typesStr;
+    this._listDataFilter.next(list);
+  }
 }

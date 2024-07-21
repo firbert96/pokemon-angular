@@ -3,14 +3,17 @@ import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
-import { ListDataFilter, ListOutput, Result, Types } from '../../interfaces/api';
+import { ListDataFilter, ListOutput } from '../../interfaces/api';
 import { DetailComponent } from '../detail/detail.component';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { GeneralService } from '../../services/general.service';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-all',
   standalone: true,
@@ -24,6 +27,9 @@ import { GeneralService } from '../../services/general.service';
     MatInputModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
+    CapitalizePipe,
+    MatIconModule,
+    MatCardModule,
   ],
   templateUrl: './all.component.html',
   styleUrl: './all.component.scss'
@@ -36,6 +42,9 @@ export class AllComponent implements OnInit, OnDestroy {
   allTypesPlaceholder = 'All Types';
   type = new FormControl('');
   limit = this.items.length + this.inc;
+  oldTypeValue = '';
+  typeValue = '';
+  filteredData: ListDataFilter[] = [];
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
@@ -45,11 +54,12 @@ export class AllComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getData('');
+    this.getData();
     this.getTypes();
     this.type.valueChanges.subscribe(value => {
-      this.items = [];
-      this.getData(value?? '');
+      this.typeValue = String(value);
+      this.loading = true;
+      this.getData();
     });
     this.generalService.listDataFilter$.subscribe(value => {
       this.items = value
@@ -69,24 +79,38 @@ export class AllComponent implements OnInit, OnDestroy {
     this.subscriptions.push(s);
   }
 
-  getData(type: string): void {
+  getData(): void {
     const s = this.apiService.getData(`/pokemon?limit=${this.limit}&offset=${this.items.length}`).subscribe({
       next: (value:ListOutput) => {
+        this.filteredData = [];
+        this.items = [];
         value.results.forEach((x)=>{
-          if(type === '' || type === this.allTypesPlaceholder ) {
-            const item: ListDataFilter = {
-              name: x.name,
-              url: x.url,
-              favorite: false,
-              types: '',
-            };
-            this.generalService.setListDataFilter(item);
-          }
+          const item: ListDataFilter = {
+            name: x.name,
+            url: x.url,
+            favorite: false,
+            types: '',
+          };
+          this.generalService.setListDataFilter(item);
         })
+        if(this.typeValue !== '') {
+          this.items.forEach(x=>{
+            if(x.types.includes(this.typeValue)) {
+              this.filteredData.push(x);
+            }
+          })
+        }
+        else {
+          this.filteredData = this.items;
+        }
+        this.loading = false;
       },
-      error: (error) => { console.error(error)},
+      error: () => {
+        this.loading = false;
+      },
     });
     this.subscriptions.push(s);
+
   }
 
   @HostListener('window:scroll', [])
@@ -94,7 +118,7 @@ export class AllComponent implements OnInit, OnDestroy {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    if (scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading) {
+    if (scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading && (this.oldTypeValue === '' || this.typeValue === '' || this.typeValue !== this.oldTypeValue)) {
       this.loadMoreItems();
     }
   }
@@ -106,8 +130,8 @@ export class AllComponent implements OnInit, OnDestroy {
     this.loading = true;
     setTimeout(() => {
       this.limit = this.items.length + this.inc;
-      this.getData(this.type.value ?? '')
-      this.loading = false;
+      this.getData();
+      this.oldTypeValue = this.typeValue;
     }, 1000);
   }
 
