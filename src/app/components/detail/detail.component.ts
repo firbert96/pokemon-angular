@@ -157,11 +157,22 @@ export class DetailComponent implements OnInit, OnDestroy {
     },1000);
   }
 
-  onImageKeyPress(event: KeyboardEvent): void {}
+  favoriteClick(): void {
+    console.log('favoriteClick');
+    this.favorite = !this.favorite;
+    this.generalService.setFavoritesFlag(this.urlParams, this.favorite);
+  }
 
-  onImageKeyDown(event: KeyboardEvent): void {}
+  // function placeholder
+  trackById(index: number): number {
+    return index;
+  }
 
-  onImageKeyUp(event: KeyboardEvent): void {}
+  onKeyPress(event: KeyboardEvent): void {}
+
+  onKeyDown(event: KeyboardEvent): void {}
+
+  onKeyUp(event: KeyboardEvent): void {}
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(el=>{el.unsubscribe()})

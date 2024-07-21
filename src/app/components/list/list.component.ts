@@ -144,6 +144,11 @@ export class ListComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  // function placeholder
+  trackById(index: number): number {
+    return index;
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(el=>{el.unsubscribe()})
   }

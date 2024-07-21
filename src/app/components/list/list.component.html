@@ -9,21 +9,19 @@
         [formControl]="type"
         [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete">
-        @for (option of types; track option) {
-          <mat-option [value]="option">{{option | capitalize}}</mat-option>
-        }
+        <mat-option [value]="option" *ngFor="let option of types; trackBy: trackById">{{option | capitalize}}</mat-option>
       </mat-autocomplete>
     </mat-form-field>
   </form>
   <ng-container *ngIf="filteredData.length > 0">
     <mat-grid-list cols="6" rowHeight="70vh">
-      @for (item of filteredData; track filteredData) {
+      <ng-container *ngFor="let item of filteredData; trackBy: trackById">
         <mat-grid-tile *ngIf="typeValue === allTypesPlaceholder || item.types.includes(typeValue)"
           [colspan]="1"
           [rowspan]="1">
           <app-detail [urlParams]="item.url" [favorite]="item.favorite"></app-detail>
         </mat-grid-tile>
-      }
+      </ng-container>
     </mat-grid-list>
   </ng-container>
   <ng-container *ngIf="!loading && filteredData.length === 0" class="empty-state">
