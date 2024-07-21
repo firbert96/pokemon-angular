@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -14,6 +14,7 @@ import { GeneralService } from '../../services/general.service';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { log } from 'console';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -55,6 +56,10 @@ export class ListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.initialize();
+  }
+
+  initialize(): void {
     this.toggleScrollPosition();
     this.getTypes();
     this.type.valueChanges.subscribe(value => {
@@ -101,16 +106,7 @@ export class ListComponent implements OnInit, OnDestroy {
           };
           this.generalService.setListDataFilter(item);
         })
-        if(this.typeValue !== this.allTypesPlaceholder) {
-          this.items.forEach(x=>{
-            if(x.types.includes(this.typeValue)) {
-              this.filteredData.push(x);
-            }
-          })
-        }
-        else {
-          this.filteredData = this.items;
-        }
+        this.setFilteredData();
         this.loading = false;
       },
       error: () => {
@@ -118,7 +114,37 @@ export class ListComponent implements OnInit, OnDestroy {
       },
     });
     this.subscriptions.push(s);
+  }
 
+  setFilteredData(): void {
+    if(this.favoritesOnly) {
+      if(this.typeValue !== this.allTypesPlaceholder) {
+        this.items.forEach(x=>{
+          if(x.types.includes(this.typeValue) && x.favorite) {
+            this.filteredData.push(x);
+          }
+        })
+      }
+      else {
+        this.items.forEach(x=>{
+          if(x.favorite) {
+            this.filteredData.push(x);
+          }
+        })
+      }
+    }
+    else if(!this.favoritesOnly){
+      if(this.typeValue !== this.allTypesPlaceholder) {
+        this.items.forEach(x=>{
+          if(x.types.includes(this.typeValue)) {
+            this.filteredData.push(x);
+          }
+        })
+      }
+      else {
+        this.filteredData = this.items;
+      }
+    }
   }
 
   @HostListener('window:scroll', [])

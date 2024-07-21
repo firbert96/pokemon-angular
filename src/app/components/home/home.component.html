@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab label="All">
-    <app-list></app-list>
+    <app-list [favoritesOnly]="false"></app-list>
   </mat-tab>
   <mat-tab label="Favorites">
     <app-list [favoritesOnly]="true"></app-list>
