@@ -1,57 +1,50 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter, ListOutput } from '../../interfaces/api';
-import { DetailComponent } from '../detail/detail.component';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { GeneralService } from '../../services/general.service';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { log } from 'console';
+import { CardComponent } from '../card/card.component';
+import { allTypesPlaceholder, inc } from '../../mock/mock';
 @Component({
   selector: 'app-list',
   standalone: true,
   imports: [
-    MatProgressSpinnerModule,
     CommonModule,
-    DetailComponent,
-    MatGridListModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
     CapitalizePipe,
-    MatIconModule,
-    MatCardModule,
+    CardComponent,
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
 export class ListComponent implements OnInit, OnDestroy {
-  @Input() favoritesOnly: boolean = false;
-  items: ListDataFilter[] = [];
-  loading = false;
-  inc = 12;
-  types: string[] = [];
-  allTypesPlaceholder = 'All Types';
-  type = new FormControl(this.allTypesPlaceholder);
-  limit = this.items.length + this.inc;
-  oldTypeValue = '';
+  @Input() favoritesOnly!: boolean;
+  @Input() types!: string[];
+  @Input() items!: ListDataFilter[];
+  @Input() filteredData: ListDataFilter[] = [];
+  @Output() getListEvent = new EventEmitter<void>();
+
+  type = new FormControl('');
   typeValue = '';
-  filteredData: ListDataFilter[] = [];
-  private threshold = 50; // Distance from bottom to trigger loading
+  favoritedData: ListDataFilter[] = [];
+  loading = {
+    filter: false,
+    favorite: false,
+  }
+  private threshold = 100; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private apiService: ApiService,
     private generalService: GeneralService,
   ) { }
 
@@ -61,14 +54,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
   initialize(): void {
     this.toggleScrollPosition();
-    this.getTypes();
+    this.type.setValue(allTypesPlaceholder);
     this.type.valueChanges.subscribe(value => {
       this.typeValue = String(value);
-      this.loading = true;
-      this.getData();
+      this.setFilteredAndFavoriteData();
     });
-    this.generalService.listDataFilter$.subscribe(value => {
-      this.items = value
+    this.generalService.favorite$.subscribe(() => {
+      this.setFilteredAndFavoriteData();
     });
   }
 
@@ -77,96 +69,6 @@ export class ListComponent implements OnInit, OnDestroy {
       top: y,
       behavior: 'smooth' // Optional: for smooth scrolling
     });
-  }
-
-  getTypes(): void {
-    const s = this.apiService.getData('/type').subscribe({
-      next: (value:ListOutput) => {
-        this.types.push(this.allTypesPlaceholder);
-        value.results.forEach((x)=>{
-          this.types.push(x.name);
-        })
-      },
-      error: (error) => { console.error(error)},
-    });
-    this.subscriptions.push(s);
-  }
-
-  getData(): void {
-    const s = this.apiService.getData(`/pokemon?limit=${this.limit}&offset=${this.items.length}`).subscribe({
-      next: (value:ListOutput) => {
-        this.filteredData = [];
-        this.items = [];
-        value.results.forEach((x)=>{
-          const item: ListDataFilter = {
-            name: x.name,
-            url: x.url,
-            favorite: false,
-            types: '',
-          };
-          this.generalService.setListDataFilter(item);
-        })
-        this.setFilteredData();
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      },
-    });
-    this.subscriptions.push(s);
-  }
-
-  setFilteredData(): void {
-    if(this.favoritesOnly) {
-      if(this.typeValue !== this.allTypesPlaceholder) {
-        this.items.forEach(x=>{
-          if(x.types.includes(this.typeValue) && x.favorite) {
-            this.filteredData.push(x);
-          }
-        })
-      }
-      else {
-        this.items.forEach(x=>{
-          if(x.favorite) {
-            this.filteredData.push(x);
-          }
-        })
-      }
-    }
-    else if(!this.favoritesOnly){
-      if(this.typeValue !== this.allTypesPlaceholder) {
-        this.items.forEach(x=>{
-          if(x.types.includes(this.typeValue)) {
-            this.filteredData.push(x);
-          }
-        })
-      }
-      else {
-        this.filteredData = this.items;
-      }
-    }
-  }
-
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    if (scrollHeight - (scrollTop + clientHeight) < this.threshold && !this.loading && (this.oldTypeValue === '' || this.typeValue === '' || this.typeValue !== this.oldTypeValue)) {
-      this.loadMoreItems();
-    }
-  }
-
-  loadMoreItems(): void {
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
-    setTimeout(() => {
-      this.limit = this.items.length + this.inc;
-      this.getData();
-      this.oldTypeValue = this.typeValue;
-    }, 1000);
   }
 
   // Optional: Method to listen to key events if needed
@@ -181,7 +83,6 @@ export class ListComponent implements OnInit, OnDestroy {
   toggleScrollPosition() {
     const currentScroll = window.scrollY;
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
     if (currentScroll === 0) {
       // If at the top, scroll to the bottom
       this.setScrollPosition(maxScroll);
@@ -189,6 +90,62 @@ export class ListComponent implements OnInit, OnDestroy {
       // If not at the top, scroll to the top
       this.setScrollPosition(0);
     }
+  }
+
+  setFilteredAndFavoriteData(): void {
+    this.loading.filter = true;
+    this.loading.favorite = true;
+    if(this.favoritesOnly) {
+      this.favoritedData = [];
+      if(this.typeValue !== allTypesPlaceholder) {
+        this.items.forEach(x=>{
+          if(x.types.includes(this.typeValue) && x.favorite) {
+            this.favoritedData.push(x);
+          }
+        })
+      }
+      else {
+        this.items.forEach(x=>{
+          if(x.favorite) {
+            this.favoritedData.push(x);
+          }
+        })
+      }
+      this.loading.favorite = false;
+    }
+    else if(!this.favoritesOnly){
+      this.filteredData = [];
+      if(this.typeValue !== allTypesPlaceholder) {
+        this.items.forEach(x=>{
+          if(x.types.includes(this.typeValue)) {
+            this.filteredData.push(x);
+          }
+        })
+      }
+      else {
+        this.filteredData = this.items;
+      }
+      this.loading.filter = false;
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    if (scrollHeight - (scrollTop + clientHeight) < this.threshold) {
+      this.loadMoreItems();
+    }
+  }
+
+  loadMoreItems(): void {
+    if (this.loading.favorite && this.loading.filter) {
+      return;
+    }
+    setTimeout(() => {
+      this.getListEvent.emit();
+    }, 1000);
   }
 
   // function placeholder

@@ -1,0 +1,22 @@
+:host {
+  app-detail {
+    width: 90%;
+    height: 90%;
+  }
+  .loader {
+    margin: 3% 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  .empty-state-content {
+    text-align: center;
+  }
+}

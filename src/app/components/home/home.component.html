@@ -1,8 +1,17 @@
 <mat-tab-group>
   <mat-tab label="All">
-    <app-list [favoritesOnly]="false"></app-list>
+    <app-list [favoritesOnly]="false"
+      [types]="types"
+      [items]="items"
+      [filteredData]="filteredData"
+      (getListEvent)="getList()"
+    ></app-list>
   </mat-tab>
   <mat-tab label="Favorites">
-    <app-list [favoritesOnly]="true"></app-list>
+    <app-list [favoritesOnly]="true"
+      [types]="types"
+      [items]="items"
+      (getListEvent)="getList()"
+    ></app-list>
   </mat-tab>
 </mat-tab-group>

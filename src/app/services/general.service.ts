@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ListDataFilter } from '../interfaces/api';
-import { log } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +8,8 @@ import { log } from 'console';
 export class GeneralService {
   private _listDataFilter = new BehaviorSubject<ListDataFilter[]>([]);
   listDataFilter$ = this._listDataFilter.asObservable();
+  private _favorite = new BehaviorSubject<string[]>([]);
+  favorite$ = this._favorite.asObservable();
 
   setListDataFilter(item:ListDataFilter): void {
     const currentItems = this._listDataFilter.getValue();
@@ -24,6 +25,10 @@ export class GeneralService {
   }
 
   setFavoritesFlag(url: string, flag:boolean ): void {
+    const currentItems = this._favorite.getValue();
+    const updatedItems = [...currentItems, url];
+    this._favorite.next(updatedItems);
+
     let list = this._listDataFilter.getValue();
     const idx = list.findIndex(x=>x.url===url);
     list[idx].favorite = flag;
