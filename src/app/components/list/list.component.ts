@@ -1,16 +1,16 @@
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { ListDataFilter, ListOutput } from '../../interfaces/api';
+import { ListDataFilter } from '../../interfaces/api';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { GeneralService } from '../../services/general.service';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { CardComponent } from '../card/card.component';
-import { allTypesPlaceholder, inc } from '../../mock/mock';
+import { allTypesPlaceholder } from '../../mock/mock';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GeneralService } from '../../services/general.service';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -23,6 +23,7 @@ import { allTypesPlaceholder, inc } from '../../mock/mock';
     ReactiveFormsModule,
     CapitalizePipe,
     CardComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
@@ -41,27 +42,27 @@ export class ListComponent implements OnInit, OnDestroy {
     filter: false,
     favorite: false,
   }
-  private threshold = 100; // Distance from bottom to trigger loading
+  private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
-
-  constructor(
-    private generalService: GeneralService,
-  ) { }
 
   ngOnInit(): void {
     this.initialize();
   }
 
+  constructor(private generalService: GeneralService) {}
+
   initialize(): void {
     this.toggleScrollPosition();
     this.type.setValue(allTypesPlaceholder);
-    this.type.valueChanges.subscribe(value => {
-      this.typeValue = String(value);
-      this.setFilteredAndFavoriteData();
-    });
-    this.generalService.favorite$.subscribe(() => {
-      this.setFilteredAndFavoriteData();
-    });
+    // this.type.valueChanges.subscribe(value => {
+    //   this.typeValue = String(value);
+    //   this.loadMoreFilteredData();
+    //   this.loadMoreFavoriteData();
+    // });
+    // this.generalService.favorite$.subscribe(() => {
+    //   this.loadMoreFilteredData();
+    //   this.loadMoreFavoriteData();
+    // });
   }
 
   setScrollPosition(y: number) {
@@ -92,41 +93,38 @@ export class ListComponent implements OnInit, OnDestroy {
     }
   }
 
-  setFilteredAndFavoriteData(): void {
-    this.loading.filter = true;
-    this.loading.favorite = true;
-    if(this.favoritesOnly) {
-      this.favoritedData = [];
-      if(this.typeValue !== allTypesPlaceholder) {
-        this.items.forEach(x=>{
-          if(x.types.includes(this.typeValue) && x.favorite) {
-            this.favoritedData.push(x);
-          }
-        })
-      }
-      else {
-        this.items.forEach(x=>{
-          if(x.favorite) {
-            this.favoritedData.push(x);
-          }
-        })
-      }
-      this.loading.favorite = false;
+  setFilteredData(): void {
+    this.filteredData = [];
+    if(this.typeValue !== allTypesPlaceholder) {
+      this.items.forEach(x=>{
+        if(x.types.includes(this.typeValue)) {
+          this.filteredData.push(x);
+        }
+      })
     }
-    else if(!this.favoritesOnly){
-      this.filteredData = [];
-      if(this.typeValue !== allTypesPlaceholder) {
-        this.items.forEach(x=>{
-          if(x.types.includes(this.typeValue)) {
-            this.filteredData.push(x);
-          }
-        })
-      }
-      else {
-        this.filteredData = this.items;
-      }
-      this.loading.filter = false;
+    else {
+      this.filteredData = this.items;
     }
+    this.loading.filter = false;
+  }
+
+  setFavoriteData(): void {
+    this.favoritedData = [];
+    if(this.typeValue !== allTypesPlaceholder) {
+      this.items.forEach(x=>{
+        if(x.types.includes(this.typeValue) && x.favorite) {
+          this.favoritedData.push(x);
+        }
+      })
+    }
+    else {
+      this.items.forEach(x=>{
+        if(x.favorite) {
+          this.favoritedData.push(x);
+        }
+      })
+    }
+    this.loading.favorite = false;
   }
 
   @HostListener('window:scroll', [])
@@ -135,17 +133,34 @@ export class ListComponent implements OnInit, OnDestroy {
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
     if (scrollHeight - (scrollTop + clientHeight) < this.threshold) {
-      this.loadMoreItems();
+      if(this.favoritesOnly) {
+        this.loadMoreFavoriteData();
+      }
+      else {
+        this.loadMoreFilteredData();
+      }
     }
   }
 
-  loadMoreItems(): void {
-    if (this.loading.favorite && this.loading.filter) {
+  loadMoreFilteredData(): void {
+    if (this.loading.filter) {
       return;
     }
+    this.loading.filter = true;
     setTimeout(() => {
       this.getListEvent.emit();
-    }, 1000);
+      this.setFilteredData();
+    }, 2000);
+  }
+
+  loadMoreFavoriteData(): void {
+    if (this.loading.favorite) {
+      return;
+    }
+    this.loading.favorite = true;
+    setTimeout(() => {
+      this.setFavoriteData();
+    }, 2000);
   }
 
   // function placeholder

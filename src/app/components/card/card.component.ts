@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DetailComponent } from '../detail/detail.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter } from '../../interfaces/api';
@@ -9,7 +8,6 @@ import { ListDataFilter } from '../../interfaces/api';
   selector: 'app-card',
   standalone: true,
   imports: [
-    MatProgressSpinnerModule,
     CommonModule,
     DetailComponent,
     MatGridListModule,

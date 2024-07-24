@@ -15,13 +15,15 @@
   </form>
   <app-card *ngIf="!favoritesOnly"
     [data]="filteredData"
-    [loading]="loading.filter"
+    [loading]="!loading.filter"
     [typeValue]="typeValue"
   ></app-card>
   <app-card *ngIf="favoritesOnly"
     [data]="favoritedData"
-    [loading]="loading.favorite"
+    [loading]="!loading.favorite"
     [typeValue]="typeValue"
   ></app-card>
-
+  <div *ngIf="loading.filter || loading.favorite" class="loader-container">
+    <mat-spinner></mat-spinner>
+  </div>
 </div>
