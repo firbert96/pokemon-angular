@@ -34,24 +34,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getTypes();
     this.getList();
     this.generalService.listDataFilter$.subscribe(value => {
       this.items = value;
     });
-  }
-
-  getTypes(): void {
-    const s = this.apiService.getData('/type').subscribe({
-      next: (value:ListOutput) => {
-       this.types.push(allTypesPlaceholder);
-        value.results.forEach((x)=>{
-          this.types.push(x.name);
-        })
-      },
-      error: (error) => { console.error(error)},
-    });
-    this.subscriptions.push(s);
   }
 
   getList(): void {

@@ -1,18 +1,5 @@
 <div class="container" (scroll)="onScroll()">
-  <form class="form">
-    <mat-form-field class="full-width">
-      <mat-label>Search Type ...</mat-label>
-      <input type="text"
-        placeholder="Pick Type"
-        aria-label="String"
-        matInput
-        [formControl]="type"
-        [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option [value]="option" *ngFor="let option of types; trackBy: trackById">{{option | capitalize}}</mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
+  <app-search-type></app-search-type>
   <app-card *ngIf="!favoritesOnly"
     [data]="filteredData"
     [loading]="!loading.filter"
@@ -23,7 +10,5 @@
     [loading]="!loading.favorite"
     [typeValue]="typeValue"
   ></app-card>
-  <div *ngIf="loading.filter || loading.favorite" class="loader-container">
-    <mat-spinner></mat-spinner>
-  </div>
+  <app-loading *ngIf="loading.filter || loading.favorite"></app-loading>
 </div>

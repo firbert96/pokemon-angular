@@ -2,40 +2,29 @@ import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter } from '../../interfaces/api';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { CardComponent } from '../card/card.component';
 import { allTypesPlaceholder } from '../../mock/mock';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GeneralService } from '../../services/general.service';
+import { LoadingComponent } from '../loading/loading.component';
+import { SearchTypeComponent } from '../search-type/search-type.component';
 @Component({
   selector: 'app-list',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    CapitalizePipe,
     CardComponent,
-    MatProgressSpinnerModule,
+    LoadingComponent,
+    SearchTypeComponent,
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
 export class ListComponent implements OnInit, OnDestroy {
   @Input() favoritesOnly!: boolean;
-  @Input() types!: string[];
   @Input() items!: ListDataFilter[];
   @Input() filteredData: ListDataFilter[] = [];
   @Output() getListEvent = new EventEmitter<void>();
 
-  type = new FormControl('');
   typeValue = '';
   favoritedData: ListDataFilter[] = [];
   loading = {
@@ -53,16 +42,14 @@ export class ListComponent implements OnInit, OnDestroy {
 
   initialize(): void {
     this.toggleScrollPosition();
-    this.type.setValue(allTypesPlaceholder);
-    // this.type.valueChanges.subscribe(value => {
-    //   this.typeValue = String(value);
-    //   this.loadMoreFilteredData();
-    //   this.loadMoreFavoriteData();
-    // });
-    // this.generalService.favorite$.subscribe(() => {
-    //   this.loadMoreFilteredData();
-    //   this.loadMoreFavoriteData();
-    // });
+    this.generalService.type$.subscribe((value) => {
+      this.typeValue = String(value);
+      this.loadMoreFilteredData();
+      this.loadMoreFavoriteData();
+    });
+    this.generalService.favorite$.subscribe(() => {
+      this.loadMoreFavoriteData();
+    });
   }
 
   setScrollPosition(y: number) {
@@ -161,11 +148,6 @@ export class ListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.setFavoriteData();
     }, 2000);
-  }
-
-  // function placeholder
-  trackById(index: number): number {
-    return index;
   }
 
   ngOnDestroy(): void {
