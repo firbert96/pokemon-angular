@@ -95,7 +95,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   setFilteredData(): void {
     this.filteredData = [];
-    if(this.typeValue !== allTypesPlaceholder) {
+    if(this.typeValue !== allTypesPlaceholder && this.typeValue !== '') {
       this.items.forEach(x=>{
         if(x.types.includes(this.typeValue)) {
           this.filteredData.push(x);
@@ -110,7 +110,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   setFavoriteData(): void {
     this.favoritedData = [];
-    if(this.typeValue !== allTypesPlaceholder) {
+    if(this.typeValue !== allTypesPlaceholder && this.typeValue !== '') {
       this.items.forEach(x=>{
         if(x.types.includes(this.typeValue) && x.favorite) {
           this.favoritedData.push(x);
