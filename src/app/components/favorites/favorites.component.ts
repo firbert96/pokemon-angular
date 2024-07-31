@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DetailComponent } from '../detail/detail.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 @Component({
-  selector: 'app-favorite',
+  selector: 'app-favorites',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,10 +22,10 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
     LoadingComponent,
     SearchTypeComponent,
   ],
-  templateUrl: './favorite.component.html',
-  styleUrl: './favorite.component.scss'
+  templateUrl: './favorites.component.html',
+  styleUrl: './favorites.component.scss'
 })
-export class FavoriteComponent implements OnInit, OnDestroy {
+export class FavoritesComponent implements OnInit, OnDestroy {
   items: ListDataFilter[] = [];
   limit = this.items.length + inc;
   typeValue = '';
