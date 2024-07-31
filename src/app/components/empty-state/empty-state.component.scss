@@ -1,0 +1,12 @@
+:host {
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .empty-state-content {
+    text-align: center;
+  }
+}

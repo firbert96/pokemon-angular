@@ -4,6 +4,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter } from '../../interfaces/api';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 @Component({
   selector: 'app-card',
   standalone: true,
@@ -12,6 +13,7 @@ import { ListDataFilter } from '../../interfaces/api';
     DetailComponent,
     MatGridListModule,
     MatIconModule,
+    EmptyStateComponent,
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'
