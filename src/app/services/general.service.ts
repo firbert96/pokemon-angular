@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ListDataFilter } from '../interfaces/api';
-import { FormControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'

@@ -1,55 +1,83 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { ListDataFilter } from '../../interfaces/api';
-import { CardComponent } from '../card/card.component';
-import { allTypesPlaceholder } from '../../mock/mock';
+import { ListDataFilter, ListOutput } from '../../interfaces/api';
+import { allTypesPlaceholder, inc } from '../../mock/mock';
 import { GeneralService } from '../../services/general.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { SearchTypeComponent } from '../search-type/search-type.component';
+import { ApiService } from '../../services/api.service';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { DetailComponent } from '../detail/detail.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
-  selector: 'app-list',
+  selector: 'app-all',
   standalone: true,
   imports: [
     CommonModule,
-    CardComponent,
     LoadingComponent,
     SearchTypeComponent,
+    DetailComponent,
+    MatGridListModule,
+    MatIconModule,
+    EmptyStateComponent,
   ],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  templateUrl: './all.component.html',
+  styleUrl: './all.component.scss'
 })
-export class ListComponent implements OnInit, OnDestroy {
-  @Input() favoritesOnly!: boolean;
-  @Input() items!: ListDataFilter[];
-  @Input() filteredData: ListDataFilter[] = [];
-  @Output() getListEvent = new EventEmitter<void>();
-
+export class AllComponent implements OnInit, OnDestroy {
+  filteredData: ListDataFilter[] = [];
+  items: ListDataFilter[] = [];
+  limit = this.items.length + inc;
   typeValue = '';
-  favoritedData: ListDataFilter[] = [];
-  loading = {
-    filter: false,
-    favorite: false,
-  }
+  loading = false;
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
+
+  constructor(
+    private generalService: GeneralService,
+    private apiService: ApiService,
+  ) {}
+
+  get allTypesPlaceholder() {
+    return allTypesPlaceholder;
+  }
 
   ngOnInit(): void {
     this.initialize();
   }
 
-  constructor(private generalService: GeneralService) {}
-
   initialize(): void {
     this.toggleScrollPosition();
+    this.getList();
     this.generalService.type$.subscribe((value) => {
       this.typeValue = String(value);
       this.loadMoreFilteredData();
-      this.loadMoreFavoriteData();
     });
-    this.generalService.favorite$.subscribe(() => {
-      this.loadMoreFavoriteData();
+    this.generalService.listDataFilter$.subscribe(value => {
+      this.items = value;
     });
+  }
+
+  getList(): void {
+    const s = this.apiService.getData(`/pokemon?limit=${this.limit}&offset=${this.items.length}`).subscribe({
+      next: (value:ListOutput) => {
+        value.results.forEach((x)=>{
+          const item: ListDataFilter = {
+            name: x.name,
+            url: x.url,
+            favorite: false,
+            types: '',
+          };
+          this.generalService.setListDataFilter(item);
+        })
+        if(this.items.length === 12) {
+          this.filteredData = this.items;
+        }
+      },
+    });
+    this.subscriptions.push(s);
   }
 
   setScrollPosition(y: number) {
@@ -92,26 +120,7 @@ export class ListComponent implements OnInit, OnDestroy {
     else {
       this.filteredData = this.items;
     }
-    this.loading.filter = false;
-  }
-
-  setFavoriteData(): void {
-    this.favoritedData = [];
-    if(this.typeValue !== allTypesPlaceholder && this.typeValue !== '') {
-      this.items.forEach(x=>{
-        if(x.types.includes(this.typeValue) && x.favorite) {
-          this.favoritedData.push(x);
-        }
-      })
-    }
-    else {
-      this.items.forEach(x=>{
-        if(x.favorite) {
-          this.favoritedData.push(x);
-        }
-      })
-    }
-    this.loading.favorite = false;
+    this.loading = false;
   }
 
   @HostListener('window:scroll', [])
@@ -120,34 +129,24 @@ export class ListComponent implements OnInit, OnDestroy {
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
     if (scrollHeight - (scrollTop + clientHeight) < this.threshold) {
-      if(this.favoritesOnly) {
-        this.loadMoreFavoriteData();
-      }
-      else {
-        this.loadMoreFilteredData();
-      }
+      this.loadMoreFilteredData();
     }
   }
 
   loadMoreFilteredData(): void {
-    if (this.loading.filter) {
+    if (this.loading) {
       return;
     }
-    this.loading.filter = true;
+    this.loading = true;
     setTimeout(() => {
-      this.getListEvent.emit();
+      this.getList();
       this.setFilteredData();
     }, 2000);
   }
 
-  loadMoreFavoriteData(): void {
-    if (this.loading.favorite) {
-      return;
-    }
-    this.loading.favorite = true;
-    setTimeout(() => {
-      this.setFavoriteData();
-    }, 2000);
+  // function placeholder
+  trackById(index: number): number {
+    return index;
   }
 
   ngOnDestroy(): void {
