@@ -104,14 +104,11 @@ export class FavoriteComponent implements OnInit, OnDestroy {
       })
     }
     else {
-      console.log('else', this.items);
-
       this.items.forEach(x=>{
         if(x.favorite) {
           this.favoritedData.push(x);
         }
       })
-      console.log('else 1', this.favoritedData);
     }
     this.load.full = false;
     this.load.part = false;

@@ -29,8 +29,6 @@ export class GeneralService {
     let updatedItems: string[] = [];
     updatedItems = flag ? [...currentItems, url] : currentItems.filter(x => x !== url);
     this._favorite.next(updatedItems);
-    console.log(updatedItems, flag);
-    console.log(this._favorite.getValue());
 
     let list = this._listDataFilter.getValue();
     const idx = list.findIndex(x=>x.url===url);
