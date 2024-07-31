@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter } from '../../interfaces/api';
-import { allTypesPlaceholder, inc } from '../../mock/mock';
+import { allTypesPlaceholder, inc, threshold } from '../../mock/mock';
 import { GeneralService } from '../../services/general.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { SearchTypeComponent } from '../search-type/search-type.component';
@@ -10,6 +10,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { DetailComponent } from '../detail/detail.component';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { InfiniteLoadService } from '../../services/infinite-load.service';
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -34,11 +35,11 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     part: false,
     full: false,
   }
-  private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
   constructor(
     private generalService: GeneralService,
+    private infiniteLoadService: InfiniteLoadService,
   ) {}
 
   get allTypesPlaceholder() {
@@ -50,7 +51,7 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   }
 
   initialize(): void {
-    this.toggleScrollPosition();
+    this.infiniteLoadService.toggleScrollPosition();
     this.generalService.favorite$.subscribe(() => {
       this.load.full = true;
       this.loadMoreFavoriteData();
@@ -64,34 +65,6 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     this.typeValue = event;
     this.load.full = true;
     this.loadMoreFavoriteData();
-  }
-
-  setScrollPosition(y: number) {
-    window.scrollTo({
-      top: y,
-      behavior: 'smooth' // Optional: for smooth scrolling
-    });
-  }
-
-  // Optional: Method to listen to key events if needed
-  @HostListener('window:keydown', ['$event'])
-  handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') { // Or any key of your choice
-      this.toggleScrollPosition();
-    }
-  }
-
-  // Method to toggle scroll position
-  toggleScrollPosition() {
-    const currentScroll = window.scrollY;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (currentScroll === 0) {
-      // If at the top, scroll to the bottom
-      this.setScrollPosition(maxScroll);
-    } else {
-      // If not at the top, scroll to the top
-      this.setScrollPosition(0);
-    }
   }
 
   setFavoriteData(): void {
@@ -114,16 +87,6 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     this.load.part = false;
   }
 
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    if (scrollHeight - (scrollTop + clientHeight) < this.threshold) {
-      this.loadMoreFavoriteData();
-    }
-  }
-
   loadMoreFavoriteData(): void {
     if (this.load.part) {
       return;
@@ -132,6 +95,16 @@ export class FavoritesComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.setFavoriteData();
     }, 2000);
+  }
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    if (scrollHeight - (scrollTop + clientHeight) < threshold) {
+      this.loadMoreFavoriteData();
+    }
   }
 
   // function placeholder
