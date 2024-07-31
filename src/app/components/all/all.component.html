@@ -1,6 +1,6 @@
 <div class="container" (scroll)="onScroll()">
-  <app-search-type></app-search-type>
-  <mat-grid-list cols="6" rowHeight="70vh" *ngIf="filteredData.length > 0">
+  <app-search-type (typeValue)="setTypeValue($event)"></app-search-type>
+  <mat-grid-list cols="6" rowHeight="70vh" *ngIf="!load.full && filteredData.length > 0">
     <ng-container *ngFor="let item of filteredData; trackBy: trackById">
       <mat-grid-tile *ngIf="typeValue === allTypesPlaceholder || item.types.includes(typeValue)"
         [colspan]="1"
@@ -9,6 +9,6 @@
       </mat-grid-tile>
     </ng-container>
   </mat-grid-list>
-  <app-empty-state *ngIf="filteredData.length === 0"></app-empty-state>
-  <app-loading *ngIf="loading"></app-loading>
+  <app-empty-state *ngIf="!load.full && filteredData.length === 0"></app-empty-state>
+  <app-loading *ngIf="load.part || load.full"></app-loading>
 </div>

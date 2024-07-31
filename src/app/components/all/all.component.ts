@@ -31,7 +31,10 @@ export class AllComponent implements OnInit, OnDestroy {
   items: ListDataFilter[] = [];
   limit = this.items.length + inc;
   typeValue = '';
-  loading = false;
+  load = {
+    part: false,
+    full: false,
+  }
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
@@ -50,14 +53,17 @@ export class AllComponent implements OnInit, OnDestroy {
 
   initialize(): void {
     this.toggleScrollPosition();
+    this.load.full = true;
     this.getList();
-    this.generalService.type$.subscribe((value) => {
-      this.typeValue = String(value);
-      this.loadMoreFilteredData();
-    });
     this.generalService.listDataFilter$.subscribe(value => {
       this.items = value;
     });
+  }
+
+  setTypeValue(event: string): void {
+    this.typeValue = event;
+    this.load.full = true;
+    this.loadMoreFilteredData();
   }
 
   getList(): void {
@@ -120,7 +126,8 @@ export class AllComponent implements OnInit, OnDestroy {
     else {
       this.filteredData = this.items;
     }
-    this.loading = false;
+    this.load.full = false;
+    this.load.part = false;
   }
 
   @HostListener('window:scroll', [])
@@ -134,10 +141,10 @@ export class AllComponent implements OnInit, OnDestroy {
   }
 
   loadMoreFilteredData(): void {
-    if (this.loading) {
+    if (this.load.part) {
       return;
     }
-    this.loading = true;
+    this.load.part = true;
     setTimeout(() => {
       this.getList();
       this.setFilteredData();

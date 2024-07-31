@@ -30,7 +30,10 @@ export class FavoriteComponent implements OnInit, OnDestroy {
   limit = this.items.length + inc;
   typeValue = '';
   favoritedData: ListDataFilter[] = [];
-  loading = false
+  load = {
+    part: false,
+    full: false,
+  }
   private threshold = 50; // Distance from bottom to trigger loading
   private subscriptions: Subscription[] = [];
 
@@ -48,16 +51,19 @@ export class FavoriteComponent implements OnInit, OnDestroy {
 
   initialize(): void {
     this.toggleScrollPosition();
-    this.generalService.type$.subscribe((value) => {
-      this.typeValue = String(value);
-      this.loadMoreFavoriteData();
-    });
     this.generalService.favorite$.subscribe(() => {
+      this.load.full = true;
       this.loadMoreFavoriteData();
     });
     this.generalService.listDataFilter$.subscribe(value => {
       this.items = value;
     });
+  }
+
+  setTypeValue(event: string): void {
+    this.typeValue = event;
+    this.load.full = true;
+    this.loadMoreFavoriteData();
   }
 
   setScrollPosition(y: number) {
@@ -98,13 +104,17 @@ export class FavoriteComponent implements OnInit, OnDestroy {
       })
     }
     else {
+      console.log('else', this.items);
+
       this.items.forEach(x=>{
         if(x.favorite) {
           this.favoritedData.push(x);
         }
       })
+      console.log('else 1', this.favoritedData);
     }
-    this.loading = false;
+    this.load.full = false;
+    this.load.part = false;
   }
 
   @HostListener('window:scroll', [])
@@ -118,10 +128,10 @@ export class FavoriteComponent implements OnInit, OnDestroy {
   }
 
   loadMoreFavoriteData(): void {
-    if (this.loading) {
+    if (this.load.part) {
       return;
     }
-    this.loading = true;
+    this.load.part = true;
     setTimeout(() => {
       this.setFavoriteData();
     }, 2000);

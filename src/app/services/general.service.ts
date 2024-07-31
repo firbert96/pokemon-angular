@@ -10,8 +10,6 @@ export class GeneralService {
   listDataFilter$ = this._listDataFilter.asObservable();
   private _favorite = new BehaviorSubject<string[]>([]);
   favorite$ = this._favorite.asObservable();
-  private _type = new BehaviorSubject<string>('');
-  type$ = this._type.asObservable();
 
   setListDataFilter(item:ListDataFilter): void {
     const currentItems = this._listDataFilter.getValue();
@@ -28,16 +26,15 @@ export class GeneralService {
 
   setFavoritesFlag(url: string, flag:boolean ): void {
     const currentItems = this._favorite.getValue();
-    const updatedItems = flag ? [...currentItems, url] : currentItems.filter(x=>x===url);
+    let updatedItems: string[] = [];
+    updatedItems = flag ? [...currentItems, url] : currentItems.filter(x => x !== url);
     this._favorite.next(updatedItems);
+    console.log(updatedItems, flag);
+    console.log(this._favorite.getValue());
 
     let list = this._listDataFilter.getValue();
     const idx = list.findIndex(x=>x.url===url);
     list[idx].favorite = flag;
     this._listDataFilter.next(list);
-  }
-
-  setTypeValue(item: string): void {
-    this._type.next(item);
   }
 }

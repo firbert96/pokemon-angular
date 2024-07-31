@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -9,7 +9,6 @@ import { allTypesPlaceholder } from '../../mock/mock';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { ListOutput } from '../../interfaces/api';
-import { GeneralService } from '../../services/general.service';
 @Component({
   selector: 'app-search-type',
   standalone: true,
@@ -26,20 +25,20 @@ import { GeneralService } from '../../services/general.service';
   styleUrl: './search-type.component.scss',
 })
 export class SearchTypeComponent implements OnInit, OnDestroy  {
+  @Output() typeValue: EventEmitter<string> = new EventEmitter<string>();
   type = new FormControl('');
   types: string[] = [];
   private subscriptions: Subscription[] = [];
 
   constructor(
     private apiService: ApiService,
-    private generalService: GeneralService,
   ) { }
 
   ngOnInit(): void {
     this.type.setValue(allTypesPlaceholder);
     this.getTypes();
     this.type.valueChanges.subscribe(value => {
-      this.generalService.setTypeValue(String(value));
+      this.typeValue.emit(String(value));
     });
   }
 
