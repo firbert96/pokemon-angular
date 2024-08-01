@@ -11,6 +11,18 @@ Angular/cli version 18 -> npm install -g @angular/cli@18
 
 See Figma -> <https://www.figma.com/design/CD2461Nsld5xxfoVorJcXw/Pokemon-Angular?node-id=0-1>
 
+## Build Docker Image
+
+`
+docker build -f ci/Dockerfile -t pokemon-angular .
+`
+
+## Run Docker Container
+
+`
+docker run -d -p 4200:4200 --name pokemon-angular-instance-1 pokemon-angular
+`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
