@@ -5,22 +5,20 @@ import { Injectable } from '@angular/core';
 })
 export class InfiniteLoadService {
   setScrollPosition(y: number) {
-    window.scrollTo({
-      top: y,
-      behavior: 'smooth' // Optional: for smooth scrolling
-    });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth' // Optional: for smooth scrolling
+      });
+    }
   }
 
   // Method to toggle scroll position
   toggleScrollPosition() {
-    const currentScroll = window.scrollY;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (currentScroll === 0) {
-      // If at the top, scroll to the bottom
-      this.setScrollPosition(maxScroll);
-    } else {
-      // If not at the top, scroll to the top
-      this.setScrollPosition(0);
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const currentScroll = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      this.setScrollPosition(currentScroll === 0 ? maxScroll : 0);
     }
   }
 }

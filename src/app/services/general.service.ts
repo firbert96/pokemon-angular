@@ -32,7 +32,9 @@ export class GeneralService {
 
     let list = this._listDataFilter.getValue();
     const idx = list.findIndex(x=>x.url===url);
-    list[idx].favorite = flag;
-    this._listDataFilter.next(list);
+    if (idx !== -1) {
+      list[idx].favorite = flag;
+      this._listDataFilter.next(list);
+    }
   }
 }
