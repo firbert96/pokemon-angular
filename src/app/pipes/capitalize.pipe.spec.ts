@@ -8,12 +8,12 @@ describe('CapitalizePipe', () => {
     pipe = new CapitalizePipe();
   });
 
-  it('should capitalize word from lowercase', () => {
+  it('should capitalize word from lowercase input', () => {
     const result = pipe.transform('world');
     expect(result).toBe('World');
   });
 
-  it('should capitalize word from uppercase', () => {
+  it('should capitalize word from uppercase input', () => {
     const result = pipe.transform('WORLD');
     expect(result).toBe('World');
   });
