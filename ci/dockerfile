@@ -9,6 +9,7 @@ RUN npm install --legacy-peer-deps
 
 COPY ./ ./
 
+RUN npm test
 RUN npm run build
 
 # Stage 2: serve the application using Nginx Web Server
