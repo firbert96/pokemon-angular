@@ -8,7 +8,7 @@ export class CapitalizePipe implements PipeTransform {
 
   transform(value: string): string {
     if (!value) return value;
-    return value.replace(/\b\w/g, first => first.toLocaleUpperCase());
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 
 }
