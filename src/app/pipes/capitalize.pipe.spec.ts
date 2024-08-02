@@ -17,4 +17,19 @@ describe('CapitalizePipe', () => {
     const result = pipe.transform('WORLD');
     expect(result).toBe('World');
   });
+
+  it('should handle mixed case input', () => {
+    const result = pipe.transform('hELLO');
+    expect(result).toBe('Hello');
+  });
+
+  it('should return empty string if input is empty', () => {
+    const result = pipe.transform('');
+    expect(result).toBe('');
+  });
+
+  it('should handle null input', () => {
+    const result = pipe.transform(null as any);
+    expect(result).toBeNull();
+  });
 });
