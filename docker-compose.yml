@@ -1,0 +1,13 @@
+version: '3.8'  # Specify the Docker Compose file format version
+
+services:
+  web:
+    image: firbert96/pokemon-angular:latest  # Replace with the desired image from Docker Hub
+    ports:
+      - "4200:4200"
+    networks:
+      - default
+
+networks:
+  default:
+    name: pokemon-angular-network  # Name of the network for your services

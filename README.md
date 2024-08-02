@@ -17,6 +17,48 @@ See Figma -> <https://www.figma.com/design/CD2461Nsld5xxfoVorJcXw/Pokemon-Angula
 docker build -f ci/Dockerfile -t pokemon-angular .
 `
 
+## Check Docker Image
+
+`
+docker images
+`
+
+## Set tag image for push docker hub
+
+`
+docker tag <existing-image-id> <username-docker>/pokemon-angular:latest
+`
+
+## Push docker hub
+
+`
+docker push <username-docker>/pokemon-angular:lates
+`
+
+## Pull docker hub
+
+`
+docker pull <username-docker>/pokemon-angular:lates
+`
+
+## Run Docker Compose
+
+`
+docker-compose up
+`
+
+## Run Docker Compose in background
+
+`
+docker-compose up -d
+`
+
+## Stop Docker Compose
+
+`
+docker-compose down
+`
+
 ## Run Docker Container
 
 `

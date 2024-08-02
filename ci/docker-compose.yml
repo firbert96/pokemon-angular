@@ -1,7 +1,0 @@
-version: '3.8'  # Specify the version of the Docker Compose file format
-
-services:        # Define your services here
-  web:           # Name of the service
-    image: nginx  # Docker image to use for this service
-    ports:
-      - "4200:4200"
