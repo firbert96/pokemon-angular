@@ -25,9 +25,6 @@ jobs:
       run: |
         docker build -f ci/Dockerfile -t pokemon-angular .
 
-  push-to-docker-hub:
-    runs-on: ubuntu-latest
-    steps:
     - name: Check Docker Image
       run: |
         docker images
