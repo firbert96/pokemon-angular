@@ -38,6 +38,11 @@ docker push <username-docker>/pokemon-angular:latest
 ## Pull docker hub
 
 `
+docker-compose pull
+`
+or
+
+`
 docker pull <username-docker>/pokemon-angular:latest
 `
 
