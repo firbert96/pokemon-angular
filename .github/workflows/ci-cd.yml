@@ -9,20 +9,28 @@ on:
       - master
 
 jobs:
-  build:
+  check-code:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
+  setup-docker:
+    runs-on: ubuntu-latest
+    steps:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
     - name: Build Docker Image
       run: |
         docker build -f ci/Dockerfile -t pokemon-angular .
 
+  push-to-docker-hub:
+    runs-on: ubuntu-latest
+    steps:
     - name: Check Docker Image
       run: |
         docker images
@@ -40,3 +48,4 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/pokemon-angular:latest
+
