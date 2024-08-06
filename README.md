@@ -32,13 +32,13 @@ docker tag <existing-image-id> <username-docker>/pokemon-angular:latest
 ## Push docker hub
 
 `
-docker push <username-docker>/pokemon-angular:lates
+docker push <username-docker>/pokemon-angular:latest
 `
 
 ## Pull docker hub
 
 `
-docker pull <username-docker>/pokemon-angular:lates
+docker pull <username-docker>/pokemon-angular:latest
 `
 
 ## Run Docker Compose
