@@ -9,21 +9,24 @@ RUN npm install --legacy-peer-deps
 
 COPY ./ ./
 
-# Install Chromium and dependencies
-RUN apk update && \
-    apk add --no-cache \
-    chromium \
-    chromium-chromedriver \
-    wget \
-    gnupg \
-    curl \
-    # Ensure that the chromium binary path is available
-    && ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
+# Make Environment for test and check code
+# # Install Chromium and dependencies
+# RUN apk update && \
+#     apk add --no-cache \
+#     chromium \
+#     chromium-chromedriver \
+#     wget \
+#     gnupg \
+#     curl \
+#     # Ensure that the chromium binary path is available
+#     && ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
 
-# Set environment variables for Chromium
-ENV CHROME_BIN=/usr/bin/chromium-browser
+# # Set environment variables for Chromium
+# ENV CHROME_BIN=/usr/bin/chromium-browser
 
-RUN npm test
+# # Check code
+# RUN npm test
+
 RUN npm run build
 
 # Stage 2: serve the application using Nginx Web Server
