@@ -47,24 +47,37 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: 'ap-southeast-1' # Change this to your region
 
-    - name: Set up SSH key
+    - name: Add EC2 to known hosts
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2_key.pem
-        chmod 400 ec2_key.pem
-
-    - name: Upload Files to EC2
-      run: |
-        scp -i "ec2_key.pem" -r . ec2-user@${{ secrets.EC2_PUBLIC_DNS }}:/home/ec2-user/app
-      shell: /usr/bin/bash -e {0}
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.EC2_PUBLIC_DNS }} >> ~/.ssh/known_hosts
       env:
-        AWS_DEFAULT_REGION: ap-southeast-1
-        AWS_REGION: ap-southeast-1
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Clean up SSH key
+    - name: Upload files to EC2 instance
       run: |
-        rm -f ec2_key.pem
+        scp -i "$SSH_PRIVATE_KEY" -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:/home/ec2-user/app
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+
+    # - name: Set up SSH key
+    #   run: |
+    #     echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2_key.pem
+    #     chmod 400 ec2_key.pem
+
+    # - name: Upload Files to EC2
+    #   run: |
+    #     scp -i "ec2_key.pem" -r . ec2-user@${{ secrets.EC2_PUBLIC_DNS }}:/home/ec2-user/app
+    #   shell: /usr/bin/bash -e {0}
+    #   env:
+    #     AWS_DEFAULT_REGION: ap-southeast-1
+    #     AWS_REGION: ap-southeast-1
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    # - name: Clean up SSH key
+    #   run: |
+    #     rm -f ec2_key.pem
 
     - name: Deploy to EC2 and Run Docker Compose
       run: |
