@@ -61,42 +61,11 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: List files
-      run: |
-        ls -la
-
-    - name: List .ssh directory
-      run: |
-        ls -la ~/.ssh
-
-    - name: Check SSH Key
-      run: |
-        cat ~/.ssh/ec2_key.pem
-
     - name: Upload files to EC2 instance
       run: |
-        scp -i ~/.ssh/ec2_key.pem -r somefile.txt ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~/app
+        scp -i ~/.ssh/ec2_key.pem -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~/app
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-
-    # - name: Set up SSH key
-    #   run: |
-    #     echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2_key.pem
-    #     chmod 400 ec2_key.pem
-
-    # - name: Upload Files to EC2
-    #   run: |
-    #     scp -i "ec2_key.pem" -r . ec2-user@${{ secrets.EC2_PUBLIC_DNS }}:/home/ec2-user/app
-    #   shell: /usr/bin/bash -e {0}
-    #   env:
-    #     AWS_DEFAULT_REGION: ap-southeast-1
-    #     AWS_REGION: ap-southeast-1
-    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    # - name: Clean up SSH key
-    #   run: |
-    #     rm -f ec2_key.pem
 
     - name: Deploy to EC2 and Run Docker Compose
       run: |
