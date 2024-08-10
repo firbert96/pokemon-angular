@@ -74,6 +74,19 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
+    - name: Install Docker Compose on EC2 instance
+      run: |
+        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
+          # Download Docker Compose binary
+          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+          # Apply executable permissions to the binary
+          sudo chmod +x /usr/local/bin/docker-compose
+
+          # Verify installation
+          docker-compose --version
+        EOF
+
     - name: Deploy to EC2 and Run Docker Compose
       run: |
         # SSH into EC2 instance and run Docker Compose commands
