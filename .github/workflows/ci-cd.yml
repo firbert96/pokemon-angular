@@ -68,10 +68,9 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Upload files to EC2 instance
+    - name: Create target directory on EC2
       run: |
-        echo "Uploading files..."
-        scp -v -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~
+        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} 'mkdir -p ~/app'
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
