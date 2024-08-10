@@ -75,7 +75,6 @@ jobs:
 
     - name: Upload files to EC2 instance
       run: |
-        mkdir -p ~/app
         scp -i ~/.ssh/ec2_key.pem -r somefile.txt ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~/app
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -101,7 +100,6 @@ jobs:
 
     - name: Deploy to EC2 and Run Docker Compose
       run: |
-        mkdir -p ~/app
         # SSH into EC2 instance and run Docker Compose commands
         ssh -i "${{ secrets.EC2_SSH_KEY }}" ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
           cd ~/app
