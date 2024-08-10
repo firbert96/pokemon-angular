@@ -49,6 +49,7 @@ jobs:
 
     - name: Decode SSH key
       run: |
+        mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/ec2_key.pem
         chmod 600 ~/.ssh/ec2_key.pem
       env:
@@ -56,14 +57,13 @@ jobs:
 
     - name: Add EC2 to known hosts
       run: |
-        mkdir -p ~/.ssh
         ssh-keyscan -H ${{ secrets.EC2_PUBLIC_DNS }} >> ~/.ssh/known_hosts
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
     - name: Upload files to EC2 instance
       run: |
-        scp -i "$SSH_PRIVATE_KEY" -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:/home/ec2-user/app
+        scp -i ~/.ssh/ec2_key.pem -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:/home/${{ secrets.EC2_USER }}/app
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
@@ -89,8 +89,8 @@ jobs:
     - name: Deploy to EC2 and Run Docker Compose
       run: |
         # SSH into EC2 instance and run Docker Compose commands
-        ssh -i "${{ secrets.EC2_SSH_KEY }}" ec2-user@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          cd /home/ec2-user/app
+        ssh -i "${{ secrets.EC2_SSH_KEY }}" ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
+          cd /home/${{ secrets.EC2_USER }}/app
           docker-compose pull
           docker-compose up -d
         EOF
