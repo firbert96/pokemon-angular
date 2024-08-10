@@ -52,6 +52,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/ec2_key.pem
         chmod 600 ~/.ssh/ec2_key.pem
+        ls -l ~/.ssh/ec2_key.pem
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
@@ -61,9 +62,13 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
+    - name: Check file .pem
+      run : |
+        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@<${{ secrets.EC2_PUBLIC_DNS }}>
+
     - name: Upload files to EC2 instance
       run: |
-        scp -i ~/.ssh/ec2_key.pem -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~/app
+        scp -v -i ~/.ssh/ec2_key.pem -r . ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }}:~/app
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
