@@ -74,7 +74,7 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Install Docker Compose on EC2 instance
+    - name: Install Docker on EC2 instance
       run: |
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
           # Update the package index
@@ -101,7 +101,11 @@ jobs:
 
           # Verify Docker installation
           docker --version
+        EOF
 
+    - name: Install Docker Compose on EC2 instance
+      run: |
+        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
           # Download Docker Compose binary
           sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
@@ -117,7 +121,25 @@ jobs:
         # SSH into EC2 instance and run Docker Compose commands
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
           cd ~
-          docker login
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/pokemon-angular:latest
+          # Create or update docker-compose.yml file
+            cat <<EOT > docker-compose.yml
+            version: '3.8'  # Specify the Docker Compose file format version
+            services:
+              web:
+                image: firbert96/pokemon-angular:latest  # Replace with the desired image from Docker Hub
+                ports:
+                  - "4200:4200"
+                networks:
+                  - default
+            networks:
+              default:
+                name: pokemon-angular-network  # Name of the network for your services
+            EOT
           docker-compose pull
           docker-compose up -d
         EOF
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
