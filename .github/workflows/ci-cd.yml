@@ -77,6 +77,31 @@ jobs:
     - name: Install Docker Compose on EC2 instance
       run: |
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
+          # Update the package index
+          sudo apt-get update
+
+          # Install Docker dependencies
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+          # Add Docker’s official GPG key
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+          # Add Docker repository
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+          # Update the package index again
+          sudo apt-get update
+
+          # Install Docker
+          sudo apt-get install -y docker-ce
+
+          # Start Docker and enable it to start on boot
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+          # Verify Docker installation
+          docker --version
+
           # Download Docker Compose binary
           sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
