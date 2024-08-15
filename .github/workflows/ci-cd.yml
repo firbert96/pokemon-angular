@@ -145,8 +145,9 @@ jobs:
           docker-compose up -d
         EOF
 
-    - name: Check file from builded by docker
+    - name: Check file from pulled by docker-compose
       run: |
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-        cat ~/app/dist/pokemon-angular/browser
+          docker ps -a
+        EOF
 
