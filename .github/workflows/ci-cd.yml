@@ -114,7 +114,6 @@ jobs:
       run: |
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
           cat <<EOF > docker-compose.yml
-          # version: '3.8'
           services:
             web:
               image: ${{ secrets.DOCKER_USERNAME }}/pokemon-angular:latest  # Replace with the desired image from Docker Hub
@@ -127,29 +126,22 @@ jobs:
               name: pokemon-angular-network  # Name of the network for your services
         EOF
 
-    - name: Check docker-compose.yml was created or updated
-      run: |
-        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          cat ~/docker-compose.yml
-        EOF
-
     - name: Deploy to EC2 and Run Docker Compose
       run: |
-        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          ls -l /var/run/docker.sock
-          sudo chmod 666 /var/run/docker.sock
-          # Log in to Docker
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-          docker pull ${{ secrets.DOCKER_USERNAME }}/pokemon-angular:latest
-          docker-compose pull
-          docker-compose up -d
-        EOF
-
-    - name: Check file from pulled by docker-compose
-      run: |
-        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          docker ps -a
-        EOF
+        cat ~/docker-compose.yml
+        ls -l /var/run/docker.sock
+        sudo chmod 666 /var/run/docker.sock
+        # Log in to Docker
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker pull ${{ secrets.DOCKER_USERNAME }}/pokemon-angular:latest
+        docker-compose pull
+        docker-compose up -d
+        # check docker containers
+        docker ps -a
+        # check docker images
+        docker image ls
+        # check list docker compose
+        docker-compose ps
 
     - name: Install nginx
       run: |
