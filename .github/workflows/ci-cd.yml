@@ -70,45 +70,41 @@ jobs:
 
     - name: Install Docker on EC2 instance
       run: |
-        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          # Update the package index
-          sudo apt-get update
+        # Update the package index
+        sudo apt-get update
 
-          # Install Docker dependencies
-          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+        # Install Docker dependencies
+        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-          # Add Docker’s official GPG key
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        # Add Docker’s official GPG key
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-          # Add Docker repository
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        # Add Docker repository
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-          # Update the package index again
-          sudo apt-get update
+        # Update the package index again
+        sudo apt-get update
 
-          # Install Docker
-          sudo apt-get install -y docker-ce
+        # Install Docker
+        sudo apt-get install -y docker-ce
 
-          # Start Docker and enable it to start on boot
-          sudo systemctl start docker
-          sudo systemctl enable docker
+        # Start Docker and enable it to start on boot
+        sudo systemctl start docker
+        sudo systemctl enable docker
 
-          # Verify Docker installation
-          docker --version
-        EOF
+        # Verify Docker installation
+        docker --version
 
     - name: Install Docker Compose on EC2 instance
       run: |
-        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
-          # Download Docker Compose binary
-          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        # Download Docker Compose binary
+        sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
-          # Apply executable permissions to the binary
-          sudo chmod +x /usr/local/bin/docker-compose
+        # Apply executable permissions to the binary
+        sudo chmod +x /usr/local/bin/docker-compose
 
-          # Verify installation
-          docker-compose --version
-        EOF
+        # Verify installation
+        docker-compose --version
 
     - name: Create or update docker-compose.yml file
       run: |
