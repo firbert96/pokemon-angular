@@ -125,7 +125,6 @@ jobs:
           networks:
             default:
               name: pokemon-angular-network  # Name of the network for your services
-          EOF
 
     - name: Check docker-compose.yml was created or updated
       run: |
