@@ -126,9 +126,12 @@ jobs:
               name: pokemon-angular-network  # Name of the network for your services
         EOF
 
-    - name: Deploy to EC2 and Run Docker Compose
+    - name: Check docker-compose.yml was created or updated
       run: |
         cat ~/docker-compose.yml
+
+    - name: Deploy to EC2 and Run Docker Compose
+      run: |
         ls -l /var/run/docker.sock
         sudo chmod 666 /var/run/docker.sock
         # Log in to Docker
