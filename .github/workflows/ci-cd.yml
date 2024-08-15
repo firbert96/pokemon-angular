@@ -127,6 +127,11 @@ jobs:
               name: pokemon-angular-network  # Name of the network for your services
           EOF
 
+    - name: Check docker-compose.yml was created or updated
+      run: |
+        ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
+        nano ~/docker-compose.yml
+
     - name: Deploy to EC2 and Run Docker Compose
       run: |
         ssh -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_DNS }} << 'EOF'
