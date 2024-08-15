@@ -195,12 +195,15 @@ jobs:
           ' | sudo tee /etc/nginx/sites-available/pokemon-angular > /dev/null
 
           # Enable the new site
-          sudo ln -sf /etc/nginx/sites-available/my-app /etc/nginx/sites-enabled/
+          sudo ln -sf /etc/nginx/sites-available/pokemon-angular /etc/nginx/sites-enabled/
 
           # Test Nginx configuration
           sudo nginx -t
 
           # Restart Nginx
           sudo systemctl restart nginx
+
+          # Check Nginx Logs
+          sudo journalctl -xeu nginx.service
         EOF
 
