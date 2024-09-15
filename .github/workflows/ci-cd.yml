@@ -176,6 +176,7 @@ jobs:
               tcp_nodelay on;
               keepalive_timeout 65;
               types_hash_max_size 2048;
+              include /etc/nginx/sites-enabled/*;
               include       mime.types;
               default_type  application/octet-stream;
               server
@@ -192,10 +193,10 @@ jobs:
                   }
               }
           }
-          ' | sudo tee /etc/nginx/sites-available > /dev/null
+          ' | sudo tee /etc/nginx/sites-available/pokemon-angular > /dev/null
 
           # Enable the new site
-          sudo ln -sf /etc/nginx/sites-available /etc/nginx/sites-enabled
+          sudo ln -sf /etc/nginx/sites-available/pokemon-angular /etc/nginx/sites-enabled/
 
           # Test Nginx configuration
           sudo nginx -t
