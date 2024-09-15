@@ -151,9 +151,58 @@ jobs:
         sudo mkdir -p /etc/nginx/sites-available
         sudo mkdir -p /etc/nginx/sites-enabled
 
-    - name: Create or overwrite Nginx configuration file
+    # - name: Create or overwrite Nginx configuration file
+    #   run: |
+    #     echo '
+    #     user nginx;
+    #     worker_processes auto;
+    #     error_log /var/log/nginx/error.log;
+    #     pid /run/nginx.pid;
+    #     # Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+    #     include /usr/share/nginx/modules/*.conf;
+    #     events
+    #     {
+    #         worker_connections 1024;
+    #     }
+    #     http
+    #     {
+    #         log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+    #         '$status $body_bytes_sent "$http_referer" '
+    #         '"$http_user_agent" "$http_x_forwarded_for"';
+    #         access_log /var/log/nginx/access.log main;
+    #         sendfile on;
+    #         tcp_nopush on;
+    #         tcp_nodelay on;
+    #         keepalive_timeout 65;
+    #         types_hash_max_size 2048;
+    #         include /etc/nginx/sites-enabled/*;
+    #         include       mime.types;
+    #         default_type  application/octet-stream;
+    #         server
+    #         {
+    #             listen 4200 default_server;
+    #             listen [::]:4200 default_server;
+    #             server_name pokemon-angular.com;
+    #             root /usr/share/nginx/html;
+    #             index index.html;
+
+    #             location /
+    #             {
+    #                 try_files $uri $uri/ /index.html;
+    #             }
+    #         }
+    #     }
+    #     ' | sudo tee /etc/nginx/sites-available/pokemon-angular > /dev/null
+
+    # - name: Create symbolic link in sites-enabled
+    #   run: |
+    #     sudo ln -sf /etc/nginx/sites-available/pokemon-angular /etc/nginx/sites-enabled/
+
+    # Prepare Nginx Configuration
+    - name: Configure Nginx
       run: |
-        echo '
+        # Create the main nginx.conf file with the correct user directive
+        sudo tee /etc/nginx/nginx.conf > /dev/null <<EOT
         user nginx;
         worker_processes auto;
         error_log /var/log/nginx/error.log;
@@ -176,27 +225,28 @@ jobs:
             keepalive_timeout 65;
             types_hash_max_size 2048;
             include /etc/nginx/sites-enabled/*;
-            include       mime.types;
             default_type  application/octet-stream;
-            server
-            {
-                listen 4200 default_server;
-                listen [::]:4200 default_server;
-                server_name _;
-                root /usr/share/nginx/html;
-                index index.html;
+        }
+        EOT
 
-                location /
-                {
-                    try_files $uri $uri/ /index.html;
-                }
+    - name: Add pokemon-angular config to Nginx
+      run: |
+        sudo tee /etc/nginx/sites-available/pokemon-angular > /dev/null <<EOT
+        server
+        {
+            listen 4200 default_server;
+            listen [::]:4200 default_server;
+            server_name pokemon-angular.com;
+            root /usr/share/nginx/html;
+            index index.html;
+
+            location /
+            {
+                try_files $uri $uri/ /index.html;
             }
         }
-        ' | sudo tee /etc/nginx/sites-available/my-app > /dev/null
-
-    - name: Create symbolic link in sites-enabled
-      run: |
-        sudo ln -sf /etc/nginx/sites-available/my-app /etc/nginx/sites-enabled/
+        EOT
+        sudo ln -s /etc/nginx/sites-available/pokemon-angular /etc/nginx/sites-enabled/
 
     - name: Test Nginx configuration
       run: |
@@ -209,4 +259,9 @@ jobs:
     - name: Check Nginx Logs
       run: |
        sudo journalctl -xeu nginx.service
+
+    - name: Deploy application
+      run: |
+        docker run -d -p 4200:4200 pokemon-angular
+
 
