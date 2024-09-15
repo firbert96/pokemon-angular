@@ -174,7 +174,7 @@ jobs:
         {
             listen 4200 default_server;
             listen [::]:4200 default_server;
-            server_name pokemon-angular.com;
+            server_name 54.255.8.8;
             root /usr/share/nginx/html;
             index index.html;
 
