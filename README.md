@@ -36,6 +36,7 @@ docker push <username-docker>/pokemon-angular:latest
 `
 
 ## Pull docker hub
+
 remark README.md
 `
 docker-compose pull
@@ -98,7 +99,8 @@ remark README.md
 `
 
 ## To insert emoticons (emojis)
-Just copy & paste from this web https://getemoji.com/
+
+Just copy & paste from this web <https://getemoji.com/>
 
 ## Further help
 
