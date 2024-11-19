@@ -1,6 +1,20 @@
 # uncomment this if want to run github action, my ci/cd deploy to AWS still failed. maybe one day I can fix it.
-# name: CI/CD Pipeline
 
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - non-existent-branch  # Placeholder trigger to prevent accidental execution
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disabled Job
+        run: echo "This workflow is disabled."
+
+# name: CI/CD Pipeline
 # on:
 #   push:
 #     branches:
