@@ -1,3 +1,4 @@
+#  rename this file to ci-cd.yml if want to run github action, my ci/cd deploy to AWS still failed. maybe one day I can fix it.
 name: CI/CD Pipeline
 
 on:
