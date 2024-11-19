@@ -1,20 +1,8 @@
-# DevSecOps (1st Priority)
-
-## DevOps
-
-### Success deploy to EC2 -> apps shown in IP Public
-- I just try so hard to become IT DevOps wanna be 😁
-
-## Security
-
-### Can survive from DDOS, XSS and SQL Injection attack through manual pentest 
-- Same, I just try so hard to become IT Security wanna be 😝
-
-# Performance and SEO (Lighthouse)(2nd Priority)
+# Performance and SEO (Lighthouse) (1st Priority)
 
 - Lighthouse is an open-source tool created by Google to help developers evaluate and improve the quality of web pages. The SEO audit category in Lighthouse includes checks that cover core SEO best practices
 
-# Enhancement Software Development side (Angular Universal)(3rd Priority)
+# Enhancement Software Development side (Angular Universal) (2nd Priority)
 
 ## Progressive Web App (PWA)
 
@@ -24,7 +12,26 @@
 
 - Angular Universal with hybrid rendering. This approach lets you take advantage of both Server-Side Rendering (SSR) for faster initial page load and SEO benefits, while still relying on Client-Side Rendering (CSR)
 
-# Testing (4th Priority)
+# Make Mobile version (3rd Priority)
+
+## Angular Capacitor
+
+## Ionic
+
+# DevSecOps 
+- Unfortunetely, right now I deploy it to Vercel but It's okay (I feel kinda sad ...)
+
+## DevOps (4th Priority)
+
+### Success deploy to EC2 -> apps shown in IP Public
+- I just try so hard to become IT DevOps wanna be 😁
+
+## Security
+
+### Can survive from DDOS, XSS and SQL Injection attack through manual pentest 
+- Same, I just try so hard to become IT Security wanna be 😝
+
+# Testing (5th Priority)
 
 - I ain't sure can finish this in 2030, because I am very slow learner 😑
 - I maybe will leave some example for unit test, e2e, and Snapshot Tests without make it 100% coverage 😵‍💫
