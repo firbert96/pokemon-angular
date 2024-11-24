@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { ApiService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
 import { DetailLiteOutput, DetailOutput, Types } from '../../interfaces/api';
-import { baseURL } from '../../mock/mock';
+import { baseURL } from '../../data/data';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';

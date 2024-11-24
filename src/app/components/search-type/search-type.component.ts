@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { allTypesPlaceholder } from '../../mock/mock';
+import { allTypesPlaceholder } from '../../data/data';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { ListOutput } from '../../interfaces/api';

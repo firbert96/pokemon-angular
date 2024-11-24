@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ListDataFilter } from '../../interfaces/api';
-import { allTypesPlaceholder, inc, threshold } from '../../mock/mock';
+import { allTypesPlaceholder, inc, threshold } from '../../data/data';
 import { GeneralService } from '../../services/general.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { SearchTypeComponent } from '../search-type/search-type.component';
