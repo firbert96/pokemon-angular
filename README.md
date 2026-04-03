@@ -1,6 +1,6 @@
 # PokemonAngular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6. This code made by hand.
 
 ## Install
 
@@ -10,66 +10,6 @@ Angular/cli version 18 -> npm install -g @angular/cli@18
 ## Figma
 
 See Figma -> <https://www.figma.com/design/CD2461Nsld5xxfoVorJcXw/Pokemon-Angular?node-id=0-1>
-
-## Build Docker Image
-
-`
-docker build -f ci/Dockerfile -t pokemon-angular .
-`
-
-## Check Docker Image
-
-`
-docker images
-`
-
-## Set tag image for push docker hub
-
-`
-docker tag <existing-image-id> <username-docker>/pokemon-angular:latest
-`
-
-## Push docker hub
-
-`
-docker push <username-docker>/pokemon-angular:latest
-`
-
-## Pull docker hub
-
-remark README.md
-`
-docker-compose pull
-`
-or
-
-`
-docker pull <username-docker>/pokemon-angular:latest
-`
-
-## Run Docker Compose
-
-`
-docker-compose up
-`
-
-## Run Docker Compose in background
-
-`
-docker-compose up -d
-`
-
-## Stop Docker Compose
-
-`
-docker-compose down
-`
-
-## Run Docker Container
-
-`
-docker run -d -p 4200:4200 --name pokemon-angular-instance-1 pokemon-angular
-`
 
 ## Development server
 

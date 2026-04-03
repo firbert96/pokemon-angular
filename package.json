@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "test:coverage": "ng test --code-coverage",
-    "serve:ssr:pokemon-angular": "node dist/pokemon-angular/server/server.mjs"
+    "lint": "eslint"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +24,6 @@
     "@angular/platform-browser-dynamic": "^18.2.12",
     "@angular/platform-server": "^18.2.12",
     "@angular/router": "^18.2.12",
-    "@angular/ssr": "^18.2.12",
     "@popperjs/core": "^2.11.8",
     "express": "^4.18.2",
     "ngx-skeleton-loader": "^9.0.0",
